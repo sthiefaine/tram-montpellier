@@ -2,6 +2,7 @@ import puppeteer, { KnownDevices } from "puppeteer-core";
 import chromium from "@sparticuz/chromium-min";
 import { Tweet } from "./types";
 import fs from "fs";
+import { NextResponse } from "next/server";
 
 // 本地 Chrome 执行包路径
 const localExecutablePath =
@@ -125,6 +126,7 @@ export const captureTweets = async (maxScrollCount = 2) => {
 const urlLogin = "https://x.com/i/flow/login";
 const url_twitter = "https://twitter.com/";
 const url_x = "https://x.com/";
+//x.com/i/flow/login
 
 // fetch userX tweets
 
@@ -147,24 +149,24 @@ export const getLastTweet = async () => {
     executablePath: isDev
       ? localExecutablePath
       : await chromium.executablePath(remoteExecutablePath),
-    headless: chromium.headless,
+    headless: true,
   });
 
   // Initialize puppeteer
   console.log("initializing puppeteer");
   var page = await browser.newPage();
   const userAgent =
-    "Mozilla/5.0 (X11; Linux x86_64)" +
-    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36";
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.80 Mobile/15E148 Safari/604.1";
   await page.setUserAgent(userAgent);
-  // await page.emulate(device);
+  await page.emulate(device);
 
   const login = async () => {
     console.log("logging in");
     // Select Input
 
     try {
-      await page.waitForSelector("[autocomplete=username]", { timeout: 1500 });
+      console.log("waiting for selector username");
+      await page.waitForSelector("[autocomplete=username]", { timeout: 1000 });
     } catch (error) {
       console.error("Selector username not found: ", error);
       return {
@@ -172,63 +174,70 @@ export const getLastTweet = async () => {
         body: JSON.stringify({ error: "Selector username not found" }),
       };
     }
+    console.log("username found let's type the username");
     await page.type(
       "input[autocomplete=username]",
       process.env.USER_EMAIL as string,
-      { delay: 550 }
+      { delay: 160 }
     );
 
     // press the button to go to the next page
     try {
-      await page.waitForSelector("button:nth-child(6)", { timeout: 1000 });
+      console.log("waiting for selector button");
+      await page.waitForSelector("button:nth-child(6)", { timeout: 500 });
     } catch (error) {
-      console.error("Selector username not found: ", error);
+      console.error("Selector username button not found: ", error);
       return {
         status: 500,
-        body: JSON.stringify({ error: "Selector username not found" }),
+        body: JSON.stringify({ error: "Selector username button not found" }),
       };
     }
+    console.log("button found let's click the button");
 
     await page.evaluate(() =>
       (document.querySelector("button:nth-child(6)") as HTMLElement).click()
     );
-    await page.waitForNetworkIdle({ idleTime: 1000 });
 
+    console.log("waiting for network idle after click username step");
+    //await page.waitForNetworkIdle({ idleTime: 3500 });
+
+    console.log("waiting for selector after idle");
     // Sometimes twitter suspect suspicious activties, so it ask for your handle/phone Number
-    const extractedText = await page.$eval("*", (el: any) => el?.innerText);
-    if (
-      extractedText.includes("Enter your phone number or username") ||
-      extractedText.includes("Numéro de téléphone ou nom d'utilisateur")
-    ) {
-      await page.waitForSelector("[autocomplete=on]");
-      await page.type(
-        "input[autocomplete=on]",
-        process.env.USER_HANDLE as string,
-        { delay: 50 }
-      );
 
-      try {
-        await page.waitForSelector(
-          'button[data-testid="ocfEnterTextNextButton"]',
-          { timeout: 1000 }
-        );
-      } catch (error) {
-        console.error("Selector Valid step 1 not found: ", error);
-        return {
-          status: 500,
-          body: JSON.stringify({ error: "Selector Valid step 1 not found" }),
-        };
-      }
+    console.log("Entering handle/phone number");
 
-      await page.evaluate(() =>
-        (
-          document.querySelector(
-            'button[data-testid="ocfEnterTextNextButton"]'
-          ) as HTMLElement
-        ).click()
+    await page.waitForSelector("[autocomplete=on]");
+    await page.type(
+      "input[autocomplete=on]",
+      process.env.USER_HANDLE as string,
+      { delay: 500 }
+    );
+
+    console.log(
+      "iiiii",
+      page.$$eval("html", (el: any) => el[0].outerHTML)
+    );
+    try {
+      await page.waitForSelector(
+        'button[data-testid="ocfEnterTextNextButton"]',
+        { timeout: 1000 }
       );
-      await page.waitForNetworkIdle({ idleTime: 1500 });
+    } catch (error) {
+      console.error("Selector Valid step 1 not found: ", error);
+      return {
+        status: 500,
+        body: JSON.stringify({ error: "Selector Valid step 1 not found" }),
+      };
     }
+
+    await page.evaluate(() =>
+      (
+        document.querySelector(
+          'button[data-testid="ocfEnterTextNextButton"]'
+        ) as HTMLElement
+      ).click()
+    );
+    // await page.waitForNetworkIdle({ idleTime: 1500 });
 
     // Select the password input
     await page.waitForSelector('[autocomplete="current-password"]');
@@ -257,46 +266,78 @@ export const getLastTweet = async () => {
       };
     }
 
-    await page.evaluate(() =>
-      (
-        document.querySelector(
-          'button[data-testid="LoginForm_Login_Button"]'
-        ) as HTMLElement
-      ).click()
-    );
-    await page.waitForNetworkIdle({ idleTime: 1000 });
+    // await page.waitForNetworkIdle({ idleTime: 400 });
 
-    page.on("response", async (response: any) => {
-      const status = response.status();
-      if (status >= 300 && status <= 399) {
-        const cookiesObject = await page.cookies();
-        fs.writeFile(
-          cookiesPath,
-          JSON.stringify(cookiesObject),
+    try {
+      await page.evaluate(() =>
+        (
+          document.querySelector(
+            'button[data-testid="LoginForm_Login_Button"]'
+          ) as HTMLElement
+        ).click()
+      );
+    } catch (error) {
+      console.error("Selector Login button not found: ", error);
+    }
 
-          function (err) {
-            if (err) {
-              console.log("The file could not be written.", err);
-            }
-            console.log("Session has been successfully saved");
+    /*     try {
+      const secureStep = await page.$(
+        'input[data-testid="ocfEnterTextTextInput"]'
+      );
+
+      if (secureStep) {
+        console.log("Element SECURE found!");
+        await page.type(
+          'input[data-testid="ocfEnterTextTextInput"]',
+          process.env.PHONE_NUMBER as string,
+          {
+            delay: 50,
           }
         );
-        console.log("CONNECTION DONE");
-        const currentUrl = page.url();
-        if (!currentUrl.includes(process.env.TARGET_USER_NAME as string)) {
-          return await goToTwitterProfilOfUser();
-        }
-        const tweets = await page.evaluate(captureTweets);
-        return tweets;
+        await page.evaluate(() =>
+          (
+            document.querySelector(
+              'button[data-testid="ocfEnterTextNextButton"]'
+            ) as HTMLElement
+          ).click()
+        );
+      } else {
+        console.log("Element SECURE not found, continuing...");
       }
-    });
+    } catch (error) {
+      console.log("Error during secure step:", error);
+    } */
+
+    await page.waitForNetworkIdle({ idleTime: 100 });
+    const currentUrl = page.url();
+    console.log("currentUrl", currentUrl);
+    if (currentUrl.includes("https://x.com/home")) {
+      const cookiesObject = await page.cookies();
+      await fs.writeFile(
+        cookiesPath,
+        JSON.stringify(cookiesObject),
+
+        function (err) {
+          if (err) {
+            console.log("The file could not be written.", err);
+          }
+          console.log("Session has been successfully saved");
+        }
+      );
+      console.log("CONNECTION DONE");
+      if (!currentUrl.includes(process.env.TARGET_USER_NAME as string)) {
+        return await goToTwitterProfilOfUser();
+      }
+      const tweets = await page.evaluate(captureTweets);
+      return tweets;
+    }
   };
 
   const goTologin = async () => {
     console.log("going to login");
     await page.goto(urlLogin);
-    await page.waitForNetworkIdle({ idleTime: 500 });
-    await login();
+    await page.waitForNetworkIdle({ idleTime: 1000 });
+    return await login();
   };
 
   const goToTwitterProfilOfUser = async () => {
@@ -329,10 +370,8 @@ export const getLastTweet = async () => {
     const tweets = await page.evaluate(captureTweets);
 
     console.log(`got ${tweets?.length} tweets`);
-
     // Close puppeteer
     await browser.close();
-
     // Expand t.co short links.
     /*   if (expandShortlinks) {
       console.log("expanding shortlinks");
@@ -370,6 +409,6 @@ export const getLastTweet = async () => {
     return newTweets;
   } else {
     console.log("No previous session found");
-    await goTologin();
+    return await goTologin();
   }
 };
