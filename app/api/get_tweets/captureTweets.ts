@@ -1,6 +1,22 @@
-import puppeteer, { KnownDevices } from "puppeteer";
+import puppeteer, { KnownDevices } from "puppeteer-core";
+import chromium from "@sparticuz/chromium-min";
 import { Tweet } from "./types";
 import fs from "fs";
+
+// 本地 Chrome 执行包路径
+const localExecutablePath =
+  process.platform === "win32"
+    ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    : process.platform === "linux"
+    ? "/usr/bin/google-chrome"
+    : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+
+// 远程执行包
+const remoteExecutablePath =
+  "https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar";
+
+// 运行环境
+const isDev = process.env.NODE_ENV === "development";
 
 export const captureTweets = async (maxScrollCount = 2) => {
   console.log("capturing tweets");
@@ -116,7 +132,7 @@ const headless = false;
 const deviceName = "iPhone 11 Pro Max";
 const device = KnownDevices[deviceName];
 const expandShortlinks = false;
-
+let browser: any = null;
 if (!process.env.TARGET_USER_NAME) {
   throw new Error("Provide a target name");
 }
@@ -125,9 +141,15 @@ const mockURL = false;
 const cookiesPath = "cookies.txt";
 
 export const getLastTweet = async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
+  browser = await puppeteer.launch({
+    args: isDev ? [] : chromium.args,
+    defaultViewport: { width: 1920, height: 1080 },
+    executablePath: isDev
+      ? localExecutablePath
+      : await chromium.executablePath(remoteExecutablePath),
+    headless: chromium.headless,
   });
+
   // Initialize puppeteer
   console.log("initializing puppeteer");
   var page = await browser.newPage();
@@ -234,7 +256,7 @@ export const getLastTweet = async () => {
     );
     await page.waitForNetworkIdle({ idleTime: 1000 });
 
-    page.on("response", async (response) => {
+    page.on("response", async (response: any) => {
       const status = response.status();
       if (status >= 300 && status <= 399) {
         const cookiesObject = await page.cookies();
