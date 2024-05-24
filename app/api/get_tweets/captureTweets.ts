@@ -160,6 +160,7 @@ export const getLastTweet = async () => {
   // await page.emulate(device);
 
   const login = async () => {
+    console.log("logging in");
     // Select Input
     await page.waitForSelector("[autocomplete=username]");
     await page.type(
@@ -172,10 +173,10 @@ export const getLastTweet = async () => {
     try {
       await page.waitForSelector("button:nth-child(6)", { timeout: 1000 });
     } catch (error) {
-      console.error("Selector not found: ", error);
+      console.error("Selector username not found: ", error);
       return {
         status: 500,
-        body: JSON.stringify({ error: "Selector not found" }),
+        body: JSON.stringify({ error: "Selector username not found" }),
       };
     }
 
@@ -203,10 +204,10 @@ export const getLastTweet = async () => {
           { timeout: 1000 }
         );
       } catch (error) {
-        console.error("Selector not found: ", error);
+        console.error("Selector Valid step 1 not found: ", error);
         return {
           status: 500,
-          body: JSON.stringify({ error: "Selector not found" }),
+          body: JSON.stringify({ error: "Selector Valid step 1 not found" }),
         };
       }
 
@@ -240,10 +241,10 @@ export const getLastTweet = async () => {
         }
       );
     } catch (error) {
-      console.error("Selector not found: ", error);
+      console.error("Selector Login button not found: ", error);
       return {
         status: 500,
-        body: JSON.stringify({ error: "Selector not found" }),
+        body: JSON.stringify({ error: "Selector Login button not found" }),
       };
     }
 
@@ -283,6 +284,7 @@ export const getLastTweet = async () => {
   };
 
   const goTologin = async () => {
+    console.log("going to login");
     await page.goto(urlLogin);
     await page.waitForNetworkIdle({ idleTime: 500 });
     await login();
