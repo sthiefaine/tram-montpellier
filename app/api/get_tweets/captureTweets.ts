@@ -162,11 +162,20 @@ export const getLastTweet = async () => {
   const login = async () => {
     console.log("logging in");
     // Select Input
-    await page.waitForSelector("[autocomplete=username]");
+
+    try {
+      await page.waitForSelector("[autocomplete=username]", { timeout: 1500 });
+    } catch (error) {
+      console.error("Selector username not found: ", error);
+      return {
+        status: 500,
+        body: JSON.stringify({ error: "Selector username not found" }),
+      };
+    }
     await page.type(
       "input[autocomplete=username]",
       process.env.USER_EMAIL as string,
-      { delay: 150 }
+      { delay: 550 }
     );
 
     // press the button to go to the next page
