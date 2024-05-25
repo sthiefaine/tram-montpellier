@@ -1,0 +1,69 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model XSession {
+  id        String   @id @default(cuid())
+  cookie    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tweet {
+  id        String   @id @default(cuid())
+  tweetId   String  @unique
+  textContent      String
+  TweetCreatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Incident {
+    id                   Int       @id @default(autoincrement())
+    time                 DateTime
+    incidentType         String
+    incidentDescription  String
+    tramsImpacted        String[]
+    tramsImpactedAccuracy Float
+    tramsImpactedSupposed String[]
+    tramsImpactedSupposedAccuracy Float
+    localisationIncident String[]
+    impactedStation      String[]
+    impactedStationAccuracy Float
+    estimatedStartTime   DateTime?
+    estimatedEndTime     DateTime?
+    incidentTerminated   Boolean   @default(false)
+    incidentDuration     Int?
+    createdAt            DateTime  @default(now())
+    updatedAt            DateTime  @updatedAt
+}
+
+model TramwayLine {
+  id           Int       @id @default(autoincrement())
+  nom          String
+  numero       String
+  couleur      String
+  externalCode String
+  name         String
+  commercialId String
+  stops        Stop[]    @relation("LineStops")
+}
+
+model Stop {
+  id            Int         @id @default(autoincrement())
+  nom           String
+  code          String
+  direction     Boolean
+  logical_stop  String
+  isTerminus    Boolean
+  order         Int
+  tramwayLines  TramwayLine[] @relation("LineStops")
+}

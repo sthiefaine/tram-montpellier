@@ -1,10 +1,8 @@
 import puppeteer, { KnownDevices } from "puppeteer-core";
 import chromium from "@sparticuz/chromium-min";
 import { Tweet } from "./types";
-import fs from "fs";
-import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
-// 本地 Chrome 执行包路径
 const localExecutablePath =
   process.platform === "win32"
     ? "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
@@ -12,11 +10,9 @@ const localExecutablePath =
     ? "/usr/bin/google-chrome"
     : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
-// 远程执行包
 const remoteExecutablePath =
   "https://github.com/Sparticuz/chromium/releases/download/v119.0.2/chromium-v119.0.2-pack.tar";
 
-// 运行环境
 const isDev = process.env.NODE_ENV === "development";
 
 export const captureTweets = async (maxScrollCount = 2) => {
@@ -35,6 +31,7 @@ export const captureTweets = async (maxScrollCount = 2) => {
 
     const tweet: Tweet = {
       time: "",
+      tweetId: "",
       permalink: "",
       textContent: "",
       links: [],
@@ -43,7 +40,10 @@ export const captureTweets = async (maxScrollCount = 2) => {
     // Extract tweet URL
     const href =
       tweetEl.querySelector('a[href*="/status/"]')?.getAttribute("href") ?? "";
-    tweet.permalink = `https://twitter.com${href}`;
+    tweet.permalink = `https://x.com${href}`;
+
+    // get twwet id
+    tweet.tweetId = href.split("/").pop() ?? "";
 
     // Extract tweet timestamp
     tweet.time = tweetEl.querySelector("time")?.getAttribute("datetime") ?? "";
@@ -65,7 +65,7 @@ export const captureTweets = async (maxScrollCount = 2) => {
         };
 
         if (/^\//.test(link.href)) {
-          link.href = `https://twitter.com${link.href}`;
+          link.href = `https://x.com${link.href}`;
         }
 
         tweet.links.push(link);
@@ -76,14 +76,14 @@ export const captureTweets = async (maxScrollCount = 2) => {
   };
 
   try {
-    console.log("capturing tweets TRY");
+    console.log("capturing tweets ENtER");
     const tweets: (Tweet | null)[] = [];
     let scrollCount = 0;
     let previousHeight = 0;
     let currentHeight = document.scrollingElement?.scrollHeight ?? 0;
 
     while (scrollCount < maxScrollCount && previousHeight < currentHeight) {
-      console.log("capturing tweets WHILE");
+      console.log("capturing tweets LOOP");
       // Scroll bookkeeping
       previousHeight = document.scrollingElement?.scrollHeight ?? 0;
 
@@ -96,22 +96,17 @@ export const captureTweets = async (maxScrollCount = 2) => {
         try {
           if (el instanceof HTMLElement) {
             const tweet = tweet2json(el);
-            console.log(tweet);
             tweets.push(tweet);
           }
         } catch (error) {
           console.error(error);
-          // Don't re-throw. Just keep going.
         }
       }
 
-      // Scroll some more...
+      // Scroll down
       window.scrollBy(0, window.innerHeight);
-
-      // Wait a bit for new stuff to load
       await sleep(500);
 
-      // More scroll bookkeeping
       currentHeight = document.scrollingElement?.scrollHeight ?? 0;
       scrollCount += 1;
     }
@@ -126,11 +121,7 @@ export const captureTweets = async (maxScrollCount = 2) => {
 const urlLogin = "https://x.com/i/flow/login";
 const url_twitter = "https://twitter.com/";
 const url_x = "https://x.com/";
-//x.com/i/flow/login
 
-// fetch userX tweets
-
-const headless = false;
 const deviceName = "iPhone 11 Pro Max";
 const device = KnownDevices[deviceName];
 const expandShortlinks = false;
@@ -140,12 +131,10 @@ if (!process.env.TARGET_USER_NAME) {
 }
 
 const mockURL = false;
-const cookiesPath = "cookies.txt";
 
 export const getLastTweet = async () => {
   browser = await puppeteer.launch({
     args: isDev ? [] : chromium.args,
-    defaultViewport: { width: 1920, height: 1080 },
     executablePath: isDev
       ? localExecutablePath
       : await chromium.executablePath(remoteExecutablePath),
@@ -164,7 +153,7 @@ export const getLastTweet = async () => {
     console.log("logging in");
     // Select Input
 
-    await page.waitForNetworkIdle({ idleTime: 1500 });
+    await page.waitForNetworkIdle({ idleTime: 1000 });
     ///////////////////////////////////////////////////////////////////////////////////
     // Select the user input
     await page.waitForSelector("[autocomplete=username]");
@@ -193,7 +182,7 @@ export const getLastTweet = async () => {
       });
       await page.keyboard.press("Enter");
 
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     }
     console.log('FORM WITH "USERNAME" NOT FOUND');
     console.log("TRY TO FIND PASSWORD");
@@ -212,53 +201,28 @@ export const getLastTweet = async () => {
     console.log("PASSWORD ENTERED");
 
     console.log("WAITING FOR NETWORK IDLE");
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(1000);
     console.log("NETWORK IDLE DONE");
-    /*     try {
-      const secureStep = await page.$(
-        'input[data-testid="ocfEnterTextTextInput"]'
-      );
-
-      if (secureStep) {
-        console.log("Element SECURE found!");
-        await page.type(
-          'input[data-testid="ocfEnterTextTextInput"]',
-          process.env.PHONE_NUMBER as string,
-          {
-            delay: 50,
-          }
-        );
-        await page.evaluate(() =>
-          (
-            document.querySelector(
-              'button[data-testid="ocfEnterTextNextButton"]'
-            ) as HTMLElement
-          ).click()
-        );
-      } else {
-        console.log("Element SECURE not found, continuing...");
-      }
-    } catch (error) {
-      console.log("Error during secure step:", error);
-    } */
 
     const currentUrl = page.url();
     console.log("currentUrl", currentUrl);
     if (currentUrl.includes("https://x.com/home")) {
-      if (isDev) {
-        const cookiesObject = await page.cookies();
-        await fs.writeFile(
-          cookiesPath,
-          JSON.stringify(cookiesObject),
+      const cookiesObject = await page.cookies();
 
-          function (err) {
-            if (err) {
-              console.log("The file could not be written.", err);
-            }
-            console.log("Session has been successfully saved");
-          }
-        );
+      // save cookies online for future use
+      const saveSession = await prisma.xSession.create({
+        data: {
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 20),
+          cookie: JSON.stringify(cookiesObject),
+        },
+      });
+
+      if (saveSession) {
+        console.log("Session has been saved in the database");
+      } else {
+        console.log("Session has not been saved ");
       }
+
       console.log("CONNECTION DONE");
       if (!currentUrl.includes(process.env.TARGET_USER_NAME as string)) {
         return await goToTwitterProfilOfUser();
@@ -307,6 +271,7 @@ export const getLastTweet = async () => {
     console.log(`got ${tweets?.length} tweets`);
     // Close puppeteer
     await browser.close();
+
     // Expand t.co short links.
     /*   if (expandShortlinks) {
       console.log("expanding shortlinks");
@@ -326,23 +291,41 @@ export const getLastTweet = async () => {
 
     return tweets;
   };
-  const previousSession = isDev ? await fs.existsSync(cookiesPath) : false;
 
+  const currentDate = new Date();
+  const [previousSession, deleteExpiredSessions] = await prisma.$transaction([
+    prisma.xSession.findFirst({
+      where: {
+        expiresAt: {
+          gte: currentDate,
+        },
+      },
+    }),
+    prisma.xSession.deleteMany({
+      where: {
+        expiresAt: {
+          lt: currentDate,
+        },
+      },
+    }),
+  ]);
   if (previousSession) {
-    const content = await fs.readFileSync(cookiesPath);
-    const cookiesArr = await JSON.parse(content as unknown as string);
+    console.log("Session already exists in the database");
+
+    const cookiesArr = await JSON.parse(
+      previousSession.cookie as unknown as string
+    );
     if (cookiesArr.length !== 0) {
       for (let cookie of cookiesArr) {
         await page.setCookie(cookie);
       }
       console.log("Session has been loaded in the browser");
     }
-
     const newTweets = await goToTwitterProfilOfUser();
 
     return newTweets;
   } else {
-    console.log("No previous session found");
+    console.log("Session not found in the database");
     return await goTologin();
   }
 };
