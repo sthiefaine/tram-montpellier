@@ -109,7 +109,7 @@ export const captureTweets = async (maxScrollCount = 2) => {
       window.scrollBy(0, window.innerHeight);
 
       // Wait a bit for new stuff to load
-      await sleep(5000);
+      await sleep(500);
 
       // More scroll bookkeeping
       currentHeight = document.scrollingElement?.scrollHeight ?? 0;
@@ -149,7 +149,7 @@ export const getLastTweet = async () => {
     executablePath: isDev
       ? localExecutablePath
       : await chromium.executablePath(remoteExecutablePath),
-    headless: true,
+    headless: isDev ? false : chromium.headless,
   });
 
   // Initialize puppeteer
@@ -164,122 +164,56 @@ export const getLastTweet = async () => {
     console.log("logging in");
     // Select Input
 
-    try {
-      console.log("waiting for selector username");
-      await page.waitForSelector("[autocomplete=username]", { timeout: 1000 });
-    } catch (error) {
-      console.error("Selector username not found: ", error);
-      return {
-        status: 500,
-        body: JSON.stringify({ error: "Selector username not found" }),
-      };
-    }
-    console.log("username found let's type the username");
-    await page.type(
-      "input[autocomplete=username]",
-      process.env.USER_EMAIL as string,
-      { delay: 160 }
-    );
-
-    // press the button to go to the next page
-    try {
-      console.log("waiting for selector button");
-      await page.waitForSelector("button:nth-child(6)", { timeout: 500 });
-    } catch (error) {
-      console.error("Selector username button not found: ", error);
-      return {
-        status: 500,
-        body: JSON.stringify({ error: "Selector username button not found" }),
-      };
-    }
-    console.log("button found let's click the button");
-
+    await page.waitForNetworkIdle({ idleTime: 1500 });
+    ///////////////////////////////////////////////////////////////////////////////////
+    // Select the user input
+    await page.waitForSelector("[autocomplete=username]");
+    await page.type("input[autocomplete=username]", process.env.USER_EMAIL, {
+      delay: 50,
+    });
+    // Press the Next button
     await page.evaluate(() =>
       (document.querySelector("button:nth-child(6)") as HTMLElement).click()
     );
+    console.log("USERNAME NEXT BUTTON CLICKED");
 
-    console.log("waiting for network idle after click username step");
-    //await page.waitForNetworkIdle({ idleTime: 3500 });
-
-    console.log("waiting for selector after idle");
+    await page.waitForTimeout(500);
+    ///////////////////////////////////////////////////////////////////////////////////
     // Sometimes twitter suspect suspicious activties, so it ask for your handle/phone Number
+    console.log("TRY TO FIND USERNAME INPUT");
+    const extractedText = await page.$eval("*", (el: any) => el.innerText);
+    if (
+      extractedText.includes("username") ||
+      extractedText.includes("utilisateur")
+    ) {
+      console.log('FORM WITH "USERNAME" FOUND');
+      await page.waitForSelector("[autocomplete=on]");
+      await page.type("input[autocomplete=on]", process.env.USER_HANDLE, {
+        delay: 50,
+      });
+      await page.keyboard.press("Enter");
 
-    console.log("Entering handle/phone number");
-
-    await page.waitForSelector("[autocomplete=on]");
-    await page.type(
-      "input[autocomplete=on]",
-      process.env.USER_HANDLE as string,
-      { delay: 500 }
-    );
-
-    console.log(
-      "iiiii",
-      page.$$eval("html", (el: any) => el[0].outerHTML)
-    );
-    try {
-      await page.waitForSelector(
-        'button[data-testid="ocfEnterTextNextButton"]',
-        { timeout: 1000 }
-      );
-    } catch (error) {
-      console.error("Selector Valid step 1 not found: ", error);
-      return {
-        status: 500,
-        body: JSON.stringify({ error: "Selector Valid step 1 not found" }),
-      };
+      await page.waitForTimeout(1000);
     }
+    console.log('FORM WITH "USERNAME" NOT FOUND');
+    console.log("TRY TO FIND PASSWORD");
 
-    await page.evaluate(() =>
-      (
-        document.querySelector(
-          'button[data-testid="ocfEnterTextNextButton"]'
-        ) as HTMLElement
-      ).click()
-    );
-    // await page.waitForNetworkIdle({ idleTime: 1500 });
-
+    ///////////////////////////////////////////////////////////////////////////////////
     // Select the password input
+    console.log("TRY TO FIND PASSWORD INPUT");
     await page.waitForSelector('[autocomplete="current-password"]');
     await page.type(
       '[autocomplete="current-password"]',
-      process.env.USER_PASSWORD as string,
-      {
-        delay: 50,
-      }
+      process.env.USER_PASSWORD,
+      { delay: 500 }
     );
     // Press the Login button
-    // LoginForm_Login_Button
+    await page.keyboard.press("Enter");
+    console.log("PASSWORD ENTERED");
 
-    try {
-      await page.waitForSelector(
-        'button[data-testid="LoginForm_Login_Button"]',
-        {
-          timeout: 1000,
-        }
-      );
-    } catch (error) {
-      console.error("Selector Login button not found: ", error);
-      return {
-        status: 500,
-        body: JSON.stringify({ error: "Selector Login button not found" }),
-      };
-    }
-
-    // await page.waitForNetworkIdle({ idleTime: 400 });
-
-    try {
-      await page.evaluate(() =>
-        (
-          document.querySelector(
-            'button[data-testid="LoginForm_Login_Button"]'
-          ) as HTMLElement
-        ).click()
-      );
-    } catch (error) {
-      console.error("Selector Login button not found: ", error);
-    }
-
+    console.log("WAITING FOR NETWORK IDLE");
+    await page.waitForTimeout(1500);
+    console.log("NETWORK IDLE DONE");
     /*     try {
       const secureStep = await page.$(
         'input[data-testid="ocfEnterTextTextInput"]'
@@ -308,22 +242,23 @@ export const getLastTweet = async () => {
       console.log("Error during secure step:", error);
     } */
 
-    await page.waitForNetworkIdle({ idleTime: 100 });
     const currentUrl = page.url();
     console.log("currentUrl", currentUrl);
     if (currentUrl.includes("https://x.com/home")) {
-      const cookiesObject = await page.cookies();
-      await fs.writeFile(
-        cookiesPath,
-        JSON.stringify(cookiesObject),
+      if (isDev) {
+        const cookiesObject = await page.cookies();
+        await fs.writeFile(
+          cookiesPath,
+          JSON.stringify(cookiesObject),
 
-        function (err) {
-          if (err) {
-            console.log("The file could not be written.", err);
+          function (err) {
+            if (err) {
+              console.log("The file could not be written.", err);
+            }
+            console.log("Session has been successfully saved");
           }
-          console.log("Session has been successfully saved");
-        }
-      );
+        );
+      }
       console.log("CONNECTION DONE");
       if (!currentUrl.includes(process.env.TARGET_USER_NAME as string)) {
         return await goToTwitterProfilOfUser();
@@ -344,9 +279,10 @@ export const getLastTweet = async () => {
     const url = `${url_x}${process.env.TARGET_USER_NAME as string}`;
     console.log(`capturing tweets from ${url}`);
     await page.goto(mockURL || url, { waitUntil: "networkidle2" });
-    await page.waitForNetworkIdle({ idleTime: 1000 });
+    await page.waitForTimeout(1500);
     try {
       // Check if the login button exists
+      console.log("Checking for login button on profil page");
       const loginButton = await page.$('a[data-testid="login"]');
       if (loginButton) {
         console.log("Login button found, performing login");
@@ -355,7 +291,6 @@ export const getLastTweet = async () => {
             document.querySelector('a[data-testid="login"]') as HTMLElement
           ).click()
         );
-        await page.waitForNetworkIdle({ idleTime: 500 });
         await login();
       } else {
         console.log("Login button not found, proceeding to capture tweets");
@@ -391,8 +326,7 @@ export const getLastTweet = async () => {
 
     return tweets;
   };
-  await page.waitForNetworkIdle({ idleTime: 1500 });
-  const previousSession = await fs.existsSync(cookiesPath);
+  const previousSession = isDev ? await fs.existsSync(cookiesPath) : false;
 
   if (previousSession) {
     const content = await fs.readFileSync(cookiesPath);
