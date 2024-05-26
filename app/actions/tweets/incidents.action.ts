@@ -1,3 +1,4 @@
+import { generateContext } from "@/helpers/openai";
 import { openai } from "@/lib/openai";
 import prisma from "@/lib/prisma";
 import { Tweet } from "@prisma/client";
@@ -38,7 +39,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
       ? previousIncidents
       : "Pas de précédent incident actif.";
 
-  const context = await generateContext(
+  const context = generateContext(
     tramwayLinesWithStops,
     previousActifIncidentsList
   );

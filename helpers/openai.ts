@@ -1,12 +1,12 @@
-const generateContext = (
+export const generateContext = (
   tramwayLinesWithStops: any,
   previousActifIncidentsList: any
 ) => {
   return `
     Tu es un assistant intelligent qui analyse les tweets du compte de la compagnie de transport pour extraire les incidents concernant les lignes de tramway avec les leurs stations si dessous :
-    ${JSON.stringify(tramwayLinesWithStops)}
+    ${tramwayLinesWithStops}
     Tu dois en conclure si il y a eu un incident ou si un incident précédemment déclaré dont voici la liste a subi des modifications ou est terminé :
-    ${JSON.stringify(previousActifIncidentsList)}
+    ${previousActifIncidentsList}
 
     Si un incident précédemment déclaré est terminé, tu dois le renvoyer et indiquer sa durée avec son id dans un objet parent incidentClose.
     Si un incident a subi des modifications tu dois les renvoyer dans un objet parent incidentModifications.
