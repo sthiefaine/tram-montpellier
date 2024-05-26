@@ -42,6 +42,7 @@ model Incident {
     estimatedEndTime     DateTime?
     incidentTerminated   Boolean   @default(false)
     incidentDuration     Int?
+    allDay              Boolean   @default(false)
     createdAt            DateTime  @default(now())
     updatedAt            DateTime  @updatedAt
 }

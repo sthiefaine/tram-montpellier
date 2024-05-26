@@ -15,6 +15,7 @@
     "@sparticuz/chromium-min": "^119.0.2",
     "fs": "^0.0.1-security",
     "next": "14.2.3",
+    "openai": "^4.47.1",
     "prisma": "^5.14.0",
     "puppeteer": "^22.9.0",
     "puppeteer-core": "^21.11.0",

@@ -1,3 +1,4 @@
+"use server";
 import { Tweet } from "@/app/api/get_tweets/types";
 import prisma from "@/lib/prisma";
 

@@ -1,3 +1,17 @@
 {
-  "regions": ["cdg1"]
+  "regions": ["cdg1"],
+  "crons": [
+    {
+      "path": "/api/get_tweets",
+      "schedule": "*/10 4-23 * * *"
+    },
+    {
+      "path": "/api/get_tweets",
+      "schedule": "*/10 0 * * *"
+    },
+    {
+      "path": "/api/get_tweets",
+      "schedule": "0,10,20,30,40,50 0 * * *"
+    }
+  ]
 }

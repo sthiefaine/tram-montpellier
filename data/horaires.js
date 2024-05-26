@@ -1,4 +1,4 @@
-const startDate = {
+export const startDate = {
   weekdays: {
     start: "04h30",
     end: "01h00",
@@ -19,13 +19,4 @@ const startDate = {
     start: "05:30",
     end: "23:30",
   },
-};
-
-export const GET = async () => {
-  const data = "no implementation yet";
-  return new Response(JSON.stringify(data), {
-    headers: {
-      "content-type": "application/json",
-    },
-  });
 };
