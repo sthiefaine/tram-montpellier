@@ -24,7 +24,12 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       status: 200,
     });
   } else {
+    // SCANNING PROCESS TO GET INCIDENTS
     const incident = await processTweetsForIncidents(savedTweets);
+
+    return new NextResponse(incident, {
+      status: 200,
+    });
 
     if (incident.incident.length !== 0) {
       await prisma.incident.createMany({

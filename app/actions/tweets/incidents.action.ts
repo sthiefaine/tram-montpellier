@@ -50,6 +50,9 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
     prompt += `Tweet ${index + 1}: "${tweet.textContent}"\n`;
   });
 
+  console.log("Generated context: ", context);
+  console.log("Generated prompt: ", prompt);
+
   const openaiResponse = await openai.chat.completions.create({
     model: "llama-3-8b-instruct",
     stream: false,
