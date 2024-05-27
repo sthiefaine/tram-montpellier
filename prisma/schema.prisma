@@ -29,13 +29,13 @@ model Tweet {
 model Incident {
     id                   Int       @id @default(autoincrement())
     time                 DateTime
+    tweetId              String
+    keyTweetIdIncident   String
     incidentType         String
     incidentDescription  String
     tramsImpacted        String[]
     tramsImpactedAccuracy Float
-    tramsImpactedSupposed String[]
-    tramsImpactedSupposedAccuracy Float
-    localisationIncident String[]
+    localisationIncident String
     impactedStation      String[]
     impactedStationAccuracy Float
     estimatedStartTime   DateTime?
