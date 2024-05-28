@@ -1,22 +1,27 @@
-export const startDate = {
-  weekdays: {
+export const startDate = [
+  {
+    when: "lundi, mardi, mercredi, jeudi",
     start: "04h30",
     end: "01h00",
   },
-  friday: {
+  {
+    when: "vendredi",
     start: "04h30",
     end: "02h00",
   },
-  saturday: {
+  {
+    when: "samedi",
     start: "04h30",
     end: "02h00",
   },
-  sunday: {
+  {
+    when: "dimanche",
     start: "05h30",
     end: "00h00",
   },
-  offday: {
+  {
+    when: "jours fériés",
     start: "05:30",
     end: "23:30",
   },
-};
+];

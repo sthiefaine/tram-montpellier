@@ -1,0 +1,19 @@
+:root {
+  --color-text: rgba(255, 255, 255, 0.96);
+  --color-text-secondary: rgba(255, 255, 255, 0.57);
+  --color-white: rgb(255, 255, 255);
+
+  --background: rgb(36, 36, 36);
+  --color-primary: rgb(23, 20, 26);
+  --color-secondary: rgb(101, 119, 134);
+  --color-accent-4: rgb(7, 182, 130); /* Vert menthe */
+  --color-accent-3: rgb(247, 205, 27); /* Jonquille */
+  --color-accent-2: rgb(0, 170, 242);
+  --color-accent: rgb(135, 57, 249);
+  --color-tertiary: rgb(204, 214, 221);
+  --color-tertiary-2: rgb(16, 15, 16);
+  --color-row: rgb(45, 45, 45);
+  --overlay: rgba(147, 149, 150, 0.4);
+  --font-family: "Poppins";
+  --box-shadow-1: 0 0 6px 3px rgba(0, 0, 0, 0.1);
+}

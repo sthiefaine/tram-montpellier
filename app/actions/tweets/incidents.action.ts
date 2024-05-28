@@ -3,7 +3,7 @@ import { openai } from "@/lib/openai";
 import prisma from "@/lib/prisma";
 import { Tweet } from "@prisma/client";
 
-async function getTramwayLinesWithStops() {
+export async function getTramwayLinesWithStops() {
   const tramwayLines = await prisma.tramwayLine.findMany({
     include: {
       stops: {
@@ -17,6 +17,7 @@ async function getTramwayLinesWithStops() {
   const result = tramwayLines.map((line) => ({
     nom: line.nom,
     numero: line.numero,
+    color: line.couleur,
     stops: line.stops.map((stop) => stop.nom),
   }));
 

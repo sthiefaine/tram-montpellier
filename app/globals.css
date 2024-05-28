@@ -17,17 +17,39 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.i {
+  display: block;
+  float: left;
+  height: 50px;
+  width: 2px;
+  background-color: #f2f2f2;
+  cursor: pointer;
+}
+
+.i .no + .i10m {
+  border-left-color: #f2f2f2 !important;
+}
+
+.no {
+  background-color: #e2e2e2;
+}
+
+.ok {
+  background-color: var(--color-accent-4);
+}
+
+.i10m {
+  border-left: 1px solid #f2f2f2;
+}
+
+.i1h {
+  border-left: 2px solid #fff;
 }

@@ -1,5 +1,5 @@
 import { Incident } from "@prisma/client";
-import styles from "./timeline.module.css";
+import styles from "./cards.module.css";
 
 type TimelineProps = {
   incidents: Incident[];

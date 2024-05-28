@@ -5,10 +5,6 @@
   align-items: center;
   gap: 20px;
   color: black;
-  padding: 20px;
-  margin: 20px;
-  min-width: 200px;
-  max-width: 200px;
 }
 
 .incident {
@@ -17,8 +13,6 @@
   border-radius: 4px;
   display: inline-block;
   margin-right: 20px;
-  padding: 10px;
-  max-width: 200px;
 }
 
 .time {
