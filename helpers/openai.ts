@@ -15,13 +15,13 @@ export const generateContext = (
 
   Je ne dois pas retourner de doublons d'incidents. Si un incident est déjà en cours, je ne le signalerai pas à nouveau.
   Si un incident précédemment déclaré est terminé, je le signalerai en modifirais en fournissant sa durée et son ID dans un objet parent "incidentClose" avec les memes clés que "incident"
-  Si un incident a été modifié, je fournirai les détails dans un objet parent "incidentModifications".
+  Si un incident a été modifié, je fournirai les détails dans un objet parent "incidentModifications"
   Si je crée un incident je dois le mettre dans un objet parent "incident".
 
   si c'est un incident ou une fin d'incident je le met dans objet parent "incident" avec les champs suivants :
   - time : l'heure de l'incident enregistrée dans le tweet en format DateTime
   - tweetId : tweetId to STRING
-  - keyTweetIdIncident : le tweetId qui correspond à l'incident initial crée en rapport avec cet incident to STRING
+  - keyTweetIdIncident : le tweetId qui correspond à l'incident initial crée en rapport avec cet incident ou le tweetId de l'incident mis à jour to STRING
   - incidentType : le type d'incident (par exemple, "perturbation", "blocage", "accident", "travaux", "malaise voyageur", "retard", "manifestation", "vandalisme")
   - incidentDescription : une description concise de l'incident
   - tramsImpacted : [1,2,3,4,5] String[]

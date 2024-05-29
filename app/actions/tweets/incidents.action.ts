@@ -2,27 +2,7 @@ import { generateContext } from "@/helpers/openai";
 import { openai } from "@/lib/openai";
 import prisma from "@/lib/prisma";
 import { Tweet } from "@prisma/client";
-
-export async function getTramwayLinesWithStops() {
-  const tramwayLines = await prisma.tramwayLine.findMany({
-    include: {
-      stops: {
-        select: {
-          nom: true,
-        },
-      },
-    },
-  });
-
-  const result = tramwayLines.map((line) => ({
-    nom: line.nom,
-    numero: line.numero,
-    color: line.couleur,
-    stops: line.stops.map((stop) => stop.nom),
-  }));
-
-  return result;
-}
+import { getTramwayLinesWithStops } from "../tramway/tramway.actions";
 
 export async function processTweetsForIncidents(tweets: Tweet[]) {
   const previousIncidents = await prisma.incident.findMany({

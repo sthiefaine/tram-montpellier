@@ -1,0 +1,27 @@
+.section {
+  background-color: var(--color-white);
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  height: 450px;
+}
+
+.timeBar {
+  display: block;
+  width: max-content;
+  height: 40px;
+  padding-left: 50px;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 2px;
+  box-shadow: 0px 15px 10px -15px #111;
+}
+
+.timeSpan {
+  float: left;
+  height: 14px;
+  color: #666666;
+  width: 50px;
+  position: relative;
+  margin-bottom: 2px;
+  margin-left: 10px;
+}

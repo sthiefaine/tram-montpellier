@@ -27,6 +27,23 @@ export async function getIncidentsTerminated() {
   return incidents;
 }
 
+export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
+  console.log(date);
+  const startOfDay = new Date(date.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+
+  const incidents = await prisma.incident.findMany({
+    where: {
+      incidentTerminated: isTerminated,
+      time: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
+  });
+  return incidents;
+}
+
 export async function createIncident(filteredIncidentsJson: parentIncident) {
   const createIncident = await prisma.incident.createMany({
     data: filteredIncidentsJson.incident.map((incident: Incident) => ({
@@ -43,7 +60,7 @@ export async function updateIncident(filteredIncidentsJson: parentIncident) {
     async (incident: Incident) => {
       await prisma.incident.update({
         where: {
-          id: incident.id,
+          tweetId: incident.keyTweetIdIncident,
         },
         data: {
           ...incident,

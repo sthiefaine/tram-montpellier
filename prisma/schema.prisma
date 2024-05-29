@@ -29,7 +29,7 @@ model Tweet {
 model Incident {
     id                   Int       @id @default(autoincrement())
     time                 DateTime
-    tweetId              String
+    tweetId              String   @unique
     keyTweetIdIncident   String
     incidentType         String
     incidentDescription  String
