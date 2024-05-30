@@ -25,11 +25,12 @@ export default function Timeline() {
   useEffect(() => {
     if (!isToday) return;
     const scrollContainer = scrollContainerRef.current;
+    if (isToday && scrollContainer?.scrollLeft !== 0) return;
     const scrollAmount = targetHour;
 
     const scrollHorizontally = () => {
       scrollContainer?.scrollBy({
-        left: scrollAmount * 60,
+        left: scrollAmount * 30,
         behavior: "smooth",
       });
     };

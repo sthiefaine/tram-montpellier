@@ -19,9 +19,10 @@ export const generateContext = (
   Si je crée un incident je dois le mettre dans un objet parent "incident".
 
   si c'est un incident ou une fin d'incident je le met dans objet parent "incident" avec les champs suivants :
+
   - time : l'heure de l'incident enregistrée dans le tweet en format DateTime
   - tweetId : tweetId to STRING
-  - keyTweetIdIncident : le tweetId qui correspond à l'incident initial crée en rapport avec cet incident ou le tweetId de l'incident mis à jour to STRING
+  - keyTweetIdIncident : le tweetId qui correspond à l'incident initial crée en rapport avec cet incident (ou le tweetId de l'incident mis à jour) to STRING
   - incidentType : le type d'incident (par exemple, "perturbation", "blocage", "accident", "travaux", "malaise voyageur", "retard", "manifestation", "vandalisme")
   - incidentDescription : une description concise de l'incident
   - tramsImpacted : [1,2,3,4,5] String[]
@@ -35,11 +36,10 @@ export const generateContext = (
   - incidentDuration : la durée de l'incident en minutes ou null
   - allDay : un booléen indiquant si l'incident dure toute la journée ou pas.
 
-  Format de la reponse JSON :
+  Format de la reponse UNIQUEMENT JSON :
   [{
     "incident": {"keys"}
     "incidentClose" {"keys"}
     "incidentModifications" {"keys"}
-  }]
-  `;
+  }]`;
 };

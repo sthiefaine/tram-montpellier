@@ -25,6 +25,8 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
     previousActifIncidentsList
   );
 
+  console.log("context", context);
+
   let prompt = `Voici la liste des tweets récent à analyser:\n\n`;
   tweets.forEach((tweet, index) => {
     prompt += `Tweet ${tweet.tweetId} - ${tweet.TweetCreatedAt}: ${tweet.textContent}\n\n`;
@@ -40,6 +42,8 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
     max_tokens: 2000,
     temperature: 0.5,
   });
+
+  console.log(openaiResponse.choices[0]?.message?.content?.trim());
 
   const incidents = openaiResponse.choices[0]?.message?.content?.trim() ?? "[]";
 
