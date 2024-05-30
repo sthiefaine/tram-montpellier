@@ -3,43 +3,46 @@ export const generateContext = (
   previousActifIncidentsList: any
 ) => {
   return `
-  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER LES INFORMATIONS RELATIVES AUX lignes 1,2,3,4,5 ET TRAITER UNIQUEMENT LES INFORMATIONS QUI SONT RELATIVES A DES INCIDENTS OU LA FIN D'UN INCIDENT.
-  Si un incident précédemment déclaré a subi des modifications ou s'est terminé. Voici la liste des incidents actifs précédents : ${JSON.stringify(
-    previousActifIncidentsList,
-    null,
-    2
-  )}.
+  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT LES INFORMATIONS RELATIVES AUX INCIDENTS OU À LA FIN D'UN INCIDENT sur les lignes de tramway 1, 2, 3, 4, 5.
 
-  Voici les lignes de tramway et avec leur stations associées:
+  Liste des incidents actifs précédents :
+  ${JSON.stringify(previousActifIncidentsList, null, 2)}
+
+  Lignes de tramway et leurs stations associées :
   ${JSON.stringify(tramwayLinesWithStops, null, 2)}
 
-  Je ne dois pas retourner de doublons d'incidents. Si un incident est déjà en cours, je ne le signalerai pas à nouveau.
-  Si un incident précédemment déclaré est terminé, je le signalerai en modifirais en fournissant sa durée et son ID dans un objet parent "incidentClose" avec les memes clés que "incident"
-  Si un incident a été modifié, je fournirai les détails dans un objet parent "incidentModifications"
-  Si je crée un incident je dois le mettre dans un objet parent "incident".
+  Règles à suivre :
+  1. Ne pas retourner de doublons d'incidents. Si un incident est déjà en cours, ne pas le signaler à nouveau.
+  2. Si un incident a été modifié, fournir les détails dans un objet parent "incidentModifications".
+  3. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
+     - time : heure de l'incident enregistrée dans le tweet (format DateTime)
+     - tweetId : tweetId (STRING)
+     - keyTweetIdIncident : le tweetId correspondant à l'incident initial ou mis à jour (STRING)
+     - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", etc.)
+     - incidentDescription : description concise de l'incident
+     - tramsImpacted : lignes de tramway impactées [1, 2, 3, 4, 5] (STRING[])
+     - tramsImpactedAccuracy : précision en %
+     - localisationIncident : localisation de l'incident
+     - impactedStation : stations potentiellement impactées
+     - impactedStationAccuracy : précision en %
+     - estimatedStartTime : date de début estimée de l'incident ou null
+     - estimatedEndTime : date de fin estimée de l'incident ou null
+     - incidentTerminated : booléen indiquant si l'incident est terminé ou non
+     - incidentDuration : durée de l'incident en minutes ou null
+     - allDay : booléen indiquant si l'incident dure toute la journée ou non.
 
-  si c'est un incident ou une fin d'incident je le met dans objet parent "incident" avec les champs suivants :
+     Pour un incident terminé, fournir les memes champs que pour un nouvel incident, mais avec les valeurs correspondantes et un champ "incidentTerminated" à true.
 
-  - time : l'heure de l'incident enregistrée dans le tweet en format DateTime
-  - tweetId : tweetId to STRING
-  - keyTweetIdIncident : le tweetId qui correspond à l'incident initial crée en rapport avec cet incident (ou le tweetId de l'incident mis à jour) to STRING
-  - incidentType : le type d'incident (par exemple, "perturbation", "blocage", "accident", "travaux", "malaise voyageur", "retard", "manifestation", "vandalisme")
-  - incidentDescription : une description concise de l'incident
-  - tramsImpacted : [1,2,3,4,5] String[]
-  - tramsImpactedAccuracy : accuracy in %
-  - localisationIncident : la localisation de l'incident
-  - impactedStation : les stations potentiellement impactées
-  - impactedStationAccuracy : accuracy in %
-  - estimatedStartTime : la date de début estimé de l'incident ou null
-  - estimatedEndTime : la date de fin estimé de l'incident ou null
-  - incidentTerminated : un booléen indiquant si l'incident est terminé ou pas
-  - incidentDuration : la durée de l'incident en minutes ou null
-  - allDay : un booléen indiquant si l'incident dure toute la journée ou pas.
+     Si un incident a subi des modifications, je dois le signaler en modifiant l'incident initial en fournissant les détails suivants :
+     - Durée
+     - Date de début
+     - Date de fin
+     - keyTweetIdIncident : doit correspondre au tweetId de l'incident à modifier.
 
-  Format de la reponse UNIQUEMENT JSON :
+  Format de la réponse UNIQUEMENT EN JSON :
   [{
-    "incident": {"keys"}
-    "incidentClose" {"keys"}
-    "incidentModifications" {"keys"}
-  }]`;
+    "incident": { /* détails de l'incident */ },
+    "incidentModifications": { /* modifications de l'incident */ }
+  }]
+  `;
 };
