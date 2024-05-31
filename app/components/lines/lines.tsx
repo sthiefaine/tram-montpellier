@@ -1,7 +1,7 @@
-import { getTramwayLinesWithStops } from "@/app/actions/tramway/tramway.actions";
 import styles from "./lines.module.css";
 import { startDate } from "@/data/horaires";
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
+import { tramwayLinesData } from "@/data/lines";
 
 const getHoursForToday = () => {
   const today = new Date();
@@ -47,7 +47,7 @@ const generateTimeIntervals = () => {
     minutes < totalMinutesInDay + endHour * 60;
     minutes += 2
   ) {
-    // 26 // tonfix
+    // 26 // to fix later :D
     const hour = Math.floor(minutes / 60) % 26;
     const minute = minutes % 60;
     const timeString = `${hour.toString().padStart(2, "0")}:${minute
@@ -91,15 +91,7 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
 export default function Lines() {
   const intervals = generateTimeIntervals();
   const { start, end } = getHoursForToday();
-  const [tramwayLines, setTramwayLines] = useState([{}]);
-
-  useEffect(() => {
-    const fetchTramwayLines = async () => {
-      const tramwayLines = await getTramwayLinesWithStops();
-      setTramwayLines(tramwayLines);
-    };
-    fetchTramwayLines();
-  }, []);
+  const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
 
   return (
     <div className={styles.lines}>
