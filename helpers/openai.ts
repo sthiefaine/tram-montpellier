@@ -3,7 +3,7 @@ export const generateContext = (
   previousActifIncidentsList: any
 ) => {
   return `
-  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT LES INFORMATIONS RELATIVES AUX INCIDENTS OU À LA FIN D'UN INCIDENT sur les lignes de tramway 1, 2, 3, 4, 5.
+  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT LES INFORMATIONS RELATIVES AUX INCIDENTS OU À LA FIN D'UN INCIDENT sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux.
 
   Liste des incidents actifs précédents :
   ${JSON.stringify(previousActifIncidentsList, null, 2)}
@@ -18,7 +18,7 @@ export const generateContext = (
      - time : heure de l'incident enregistrée dans le tweet (format DateTime)
      - tweetId : tweetId (STRING)
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial ou mis à jour (STRING)
-     - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", etc.)
+     - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", etc.)
      - incidentDescription : description concise de l'incident
      - tramsImpacted : lignes de tramway impactées [1, 2, 3, 4, 5] (STRING[])
      - tramsImpactedAccuracy : précision en %
@@ -31,7 +31,7 @@ export const generateContext = (
      - incidentDuration : durée de l'incident en minutes ou null
      - allDay : booléen indiquant si l'incident dure toute la journée ou non.
 
-     Pour un incident terminé, fournir les memes champs que pour un nouvel incident, mais avec les valeurs correspondantes et un champ "incidentTerminated" à true.
+     Pour un incident terminé, fournir les memes champs que pour un nouvel incident, mais avec les valeurs correspondantes comme "estimatedStartTime", "estimatedEndTime", "incidentDuration" et le champ "incidentTerminated" en se bassant sur les incidents actifs précédents.
 
      Si un incident a subi des modifications, je dois le signaler en modifiant l'incident initial en fournissant les détails suivants :
      - Durée
