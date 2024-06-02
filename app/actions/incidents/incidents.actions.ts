@@ -29,7 +29,10 @@ export async function getIncidentsTerminated() {
 
 export async function getIncidentsAllForDate(date: Date) {
   const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(date.setHours(23, 59, 59, 999));
+  // next day at 2am
+  const endOfDay = new Date(
+    date.setDate(date.getDate() + 1) && date.setHours(2, 0, 0, 0)
+  );
 
   const incidents = await prisma.incident.findMany({
     where: {

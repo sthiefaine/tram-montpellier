@@ -1,11 +1,16 @@
 import styles from "./lines.module.css";
 import { startDate } from "@/data/horaires";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { tramwayLinesData } from "@/data/lines";
+import {
+  getIncidentsAllForDate,
+  getIncidentsForDate,
+} from "@/app/actions/incidents/incidents.actions";
+import { useDateSelectorStore } from "@/store/dateSelector";
+import { Incident } from "@prisma/client";
 
-const getHoursForToday = () => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
+const getHoursForSelectedDate = (dateSelected: Date) => {
+  const dayOfWeek = dateSelected.getDay();
   let hours = null;
   const daysOfWeek = [
     "dimanche",
@@ -17,7 +22,6 @@ const getHoursForToday = () => {
     "samedi",
   ];
 
-  // Jour de la semaine actuel en texte
   const todayText = daysOfWeek[dayOfWeek];
 
   for (const entry of startDate) {
@@ -89,37 +93,86 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
 };
 
 export default function Lines() {
+  const dateSelected = useDateSelectorStore((state) => state.dateSelected);
   const intervals = generateTimeIntervals();
-  const { start, end } = getHoursForToday();
+  const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
+  const [incidents, setIncidents] = useState<Incident[] | null>(null);
+  const [incidentSelected, setIncidentSelected] = useState<Incident>();
+  const [lineSelected, setLineSelected] = useState<string>("");
+
+  useEffect(() => {
+    const fetchIncidents = async () => {
+      const response = await getIncidentsAllForDate(dateSelected);
+      console.log(response[1].time.toTimeString().slice(0, 5));
+      setIncidents(response);
+    };
+
+    fetchIncidents();
+  }, [dateSelected]);
+
+  const incidentsForLineOnInterval = (line: string, interval: string) => {
+    if (!incidents) return [];
+    return incidents?.filter((incident) => {
+      return (
+        incident.tramsImpacted.includes(line) &&
+        incident.time.toTimeString().slice(0, 5) === interval
+      );
+    });
+  };
+
+  const handleIncidentClick = (lineNumber: string, timeString: string) => {
+    const result = incidentsForLineOnInterval(lineNumber, timeString);
+    setIncidentSelected(result[0] || null);
+    setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
+  };
 
   return (
     <div className={styles.lines}>
       {tramwayLines.map((line, index) => (
-        <div key={index} className={styles.line}>
-          <div className={styles.lineName}>
-            <span
-              className={styles.numero}
-              style={{ backgroundColor: (line as { color: string }).color }}
-            >
-              {(line as { numero: string }).numero}
-            </span>
+        <div className={styles.lineContainer} key={index}>
+          <div className={styles.line}>
+            <div className={styles.lineName}>
+              <span
+                className={styles.numero}
+                style={{ backgroundColor: (line as { color: string }).color }}
+              >
+                {(line as { numero: string }).numero}
+              </span>
+            </div>
+            {intervals.map((interval, index) => (
+              <a
+                onClick={() =>
+                  handleIncidentClick(
+                    (line as { numero: string }).numero,
+                    interval.timeString
+                  )
+                }
+                key={index}
+                className={
+                  (isWithinTimeRange(interval.timeString, start, end)
+                    ? incidentsForLineOnInterval(
+                        (line as { numero: string }).numero,
+                        interval.timeString
+                      ).length > 0
+                      ? "incident"
+                      : "ok"
+                    : "no") +
+                  " " +
+                  interval.classes.join(" ")
+                }
+                title={`${interval.timeString}%${
+                  isWithinTimeRange(interval.timeString, start, end)
+                    ? "ok"
+                    : "no"
+                }%`}
+              ></a>
+            ))}
           </div>
-          {intervals.map((interval, index) => (
-            <a
-              key={index}
-              className={
-                (isWithinTimeRange(interval.timeString, start, end)
-                  ? "ok"
-                  : "no") +
-                " " +
-                interval.classes.join(" ")
-              }
-              title={`${interval.timeString}%${
-                isWithinTimeRange(interval.timeString, start, end) ? "ok" : "no"
-              }%`}
-            ></a>
-          ))}
+          <div className={styles.incidents}>
+            {lineSelected === line.numero &&
+              incidentSelected?.incidentDescription}
+          </div>
         </div>
       ))}
     </div>

@@ -5,15 +5,18 @@
 .line {
   width: max-content;
   overflow-y: auto;
-  margin-bottom: 40px;
-}
-
-.ligne:after {
 }
 
 .line,
 .a {
   padding-left: 60px;
+}
+
+.incidents {
+  margin: 0 auto;
+  text-align: center;
+  height: 30px;
+  margin-top: 5px;
 }
 
 .lineName {
@@ -36,8 +39,4 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--color-text);
-}
-
-.no {
-  background-color: #e2e2e2;
 }
