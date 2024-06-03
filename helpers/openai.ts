@@ -3,7 +3,7 @@ export const generateContext = (
   previousActifIncidentsList: any
 ) => {
   return `
-  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT LES INFORMATIONS RELATIVES AUX PROBLEMES OU À LA FIN D'UN PROBLEMES sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux.
+  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT LES INFORMATIONS RELATIVES AUX INCIDENTS OU À LA FIN D'UN INCIDENTS sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux.
 
   Liste des incidents actifs précédents :
   ${JSON.stringify(previousActifIncidentsList, null, 2)}
@@ -31,7 +31,7 @@ export const generateContext = (
      - incidentDuration : durée de l'incident en minutes ou null
      - allDay : booléen indiquant si l'incident dure toute la journée ou non.
 
-     Pour un incident terminé, fournir les memes champs que pour un nouvel incident, mais avec les valeurs correspondantes comme "estimatedStartTime", "estimatedEndTime", "incidentDuration" et le champ "incidentTerminated" en se bassant sur les incidents actifs précédents si besoin.
+     Pour un incident terminé, fournir les memes champs que pour un nouvel incident, mais avec les valeurs correspondantes comme "incidentDuration" et le champ "incidentTerminated" en se bassant aussi sur les incidents précédents.
 
      Si un incident a subi des modifications, je dois le signaler en modifiant l'incident initial en fournissant les détails suivants :
      - Durée

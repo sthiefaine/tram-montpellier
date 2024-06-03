@@ -8,10 +8,30 @@ import styles from "./footer.module.css";
 export default async function Footer() {
   const lastFetchTweet = await getLastFetchTweet();
   const lastReport = await getLastReport();
+
+  const lastTweetDate = lastFetchTweet[0]?.lastFetch.toLocaleTimeString(
+    "fr-FR",
+    {
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }
+  );
+
+  const lastReportDate = lastReport[0]?.lastReport.toLocaleTimeString("fr-FR", {
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
   return (
     <div className={styles.footer}>
-      <p> last update: {lastFetchTweet[0]?.lastFetch.toTimeString()}</p>
-      <p> last Report: {lastReport[0]?.lastReport.toTimeString()}</p>
+      <p> last update: {lastTweetDate}</p>
+      <p> last Report: {lastReportDate}</p>
     </div>
   );
 }

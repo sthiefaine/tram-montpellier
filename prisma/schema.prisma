@@ -70,11 +70,11 @@ model Stop {
 }
 
 model LastFetchTweet {
-  id        Int      @id @default(1)
+  id        Int      @id @unique
   lastFetch DateTime
 }
 
 model LastReport {
-  id        Int      @id @default(1)
+  id        Int      @id @unique
   lastReport DateTime
 }

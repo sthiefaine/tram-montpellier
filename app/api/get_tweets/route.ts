@@ -21,6 +21,8 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
   const numberOfLastTweets = lastTweets.length;
   const numberOfSavedTweets = savedTweets.length;
 
+  await postLastFetchTweet();
+
   if (numberOfLastTweets === 0) {
     return new NextResponse("Pas de nouveaux message", {
       status: 200,
@@ -30,7 +32,6 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       status: 200,
     });
   } else {
-    await postLastFetchTweet();
     // SCANNING PROCESS TO GET INCIDENTS
     const responseText = await processTweetsForIncidents(savedTweets);
 

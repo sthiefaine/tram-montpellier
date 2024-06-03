@@ -1,16 +1,19 @@
 import prisma from "@/lib/prisma";
 
 export async function postLastFetchTweet() {
-  const lastFetchTweet = await prisma.lastFetchTweet.createMany({
-    data: [
-      {
-        id: 1,
-        lastFetch: new Date(),
-      },
-    ],
-    skipDuplicates: true,
-  });
-  return lastFetchTweet;
+  const id = 1;
+  const newLastFetch = new Date();
+
+  try {
+    const lastFetchTweet = await prisma.lastFetchTweet.upsert({
+      where: { id: id },
+      update: { lastFetch: newLastFetch },
+      create: { id: id, lastFetch: newLastFetch },
+    });
+    return lastFetchTweet;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getLastFetchTweet() {
@@ -23,16 +26,19 @@ export async function getLastFetchTweet() {
 }
 
 export async function postLastReport() {
-  const LastReport = await prisma.lastReport.createMany({
-    data: [
-      {
-        id: 1,
-        lastReport: new Date(),
-      },
-    ],
-    skipDuplicates: true,
-  });
-  return LastReport;
+  const id = 1;
+  const newLastFetch = new Date();
+
+  try {
+    const lastReport = await prisma.lastReport.upsert({
+      where: { id: id },
+      update: { lastReport: newLastFetch },
+      create: { id: id, lastReport: newLastFetch },
+    });
+    return lastReport;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getLastReport() {
