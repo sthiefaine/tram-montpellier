@@ -5,7 +5,6 @@ import styles from "./sectionCards.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
 
 export default function SectionCards() {
-  console.log("SectionCards");
   const { dateSelected } = useDateSelectorStore(
     useShallow((state) => ({
       dateSelected: state.dateSelected,

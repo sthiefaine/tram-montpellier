@@ -1,9 +1,10 @@
-"use server";
 import {
   getLastFetchTweet,
   getLastReport,
 } from "@/app/actions/fetch/fetch.actions";
 import styles from "./footer.module.css";
+
+export const revalidate = 600;
 
 export default async function Footer() {
   const lastFetchTweet = await getLastFetchTweet();

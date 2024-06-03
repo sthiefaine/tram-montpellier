@@ -41,12 +41,11 @@ export default function Timeline() {
     const intervalId = setInterval(() => {
       scrollHorizontally();
       clearInterval(intervalId);
-    }, 1500);
+    }, 1000);
   }, [isToday, targetHour]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log(modalRef.current);
       if (
         modalRef.current &&
         !modalRef.current.contains(event.target as Node)
