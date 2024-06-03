@@ -11,6 +11,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
       incidentTerminated: false,
       allDay: false,
     },
+    take: 4,
   });
 
   // get tramays lines and stop from the database
@@ -40,7 +41,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
       { role: "system", content: context },
       { role: "user", content: prompt },
     ],
-    max_tokens: 2000,
+    max_tokens: 4200,
     temperature: 0.5,
   });
 
