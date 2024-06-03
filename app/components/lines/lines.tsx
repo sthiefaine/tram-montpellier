@@ -132,7 +132,9 @@ export default function Lines() {
     return incidents?.filter((incident) => {
       return (
         incident.tramsImpacted.includes(line) &&
-        incident.time.toTimeString().slice(0, 5) === interval
+        incident.time
+          .toLocaleTimeString("fr-FR", { timeZone: "UTC" })
+          .slice(0, 5) === interval
       );
     });
   };

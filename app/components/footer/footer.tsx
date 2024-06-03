@@ -9,7 +9,7 @@ export default async function Footer() {
   const lastFetchTweet = await getLastFetchTweet();
   const lastReport = await getLastReport();
 
-  const lastTweetDate = lastFetchTweet[0]?.lastFetch.toLocaleTimeString(
+  const lastTweetDate = lastFetchTweet[0]?.lastFetch.toLocaleDateString(
     "fr-FR",
     {
       month: "2-digit",
@@ -20,7 +20,7 @@ export default async function Footer() {
     }
   );
 
-  const lastReportDate = lastReport[0]?.lastReport.toLocaleTimeString("fr-FR", {
+  const lastReportDate = lastReport[0]?.lastReport.toLocaleDateString("fr-FR", {
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",

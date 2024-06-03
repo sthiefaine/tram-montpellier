@@ -18,6 +18,7 @@ export default function Modal({ test, children }: ModalProps) {
         </span>
         <p>
           {incidentsToDisplay[0]?.time.toLocaleTimeString("fr-FR", {
+            timeZone: "UTC",
             hour: "2-digit",
             minute: "2-digit",
           })}
