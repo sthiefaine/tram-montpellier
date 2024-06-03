@@ -12,6 +12,7 @@ export default async function Footer() {
   const lastTweetDate = lastFetchTweet[0]?.lastFetch.toLocaleDateString(
     "fr-FR",
     {
+      timeZone: "EUROPE/PARIS",
       month: "2-digit",
       day: "2-digit",
       hour: "2-digit",
@@ -21,6 +22,7 @@ export default async function Footer() {
   );
 
   const lastReportDate = lastReport[0]?.lastReport.toLocaleDateString("fr-FR", {
+    timeZone: "EUROPE/PARIS",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
