@@ -3,6 +3,7 @@ import { openai } from "@/lib/openai";
 import prisma from "@/lib/prisma";
 import { Tweet } from "@prisma/client";
 import { getTramwayLinesWithStops } from "../tramway/tramway.actions";
+import { postLastReport } from "../fetch/fetch.actions";
 
 export async function processTweetsForIncidents(tweets: Tweet[]) {
   const previousIncidents = await prisma.incident.findMany({
@@ -43,9 +44,9 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
     temperature: 0.5,
   });
 
-  console.log(openaiResponse.choices[0]?.message?.content?.trim());
-
   const incidents = openaiResponse.choices[0]?.message?.content?.trim() ?? "[]";
+
+  await postLastReport();
 
   return incidents;
 }

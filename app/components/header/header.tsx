@@ -20,12 +20,20 @@ export function Header() {
     <header
       style={{
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
       }}
     >
-      <h1 className={styles.title}>Suivi de l'état du trafic</h1>{" "}
-      <button onClick={handleNavigate}>
+      <span>
+        <h1 className={styles.title}>Tramway de Montpellier</h1>
+        <h2 className={styles.subtitle}>Suivi de l'état du trafic</h2>
+      </span>
+      <button
+        style={{ display: "flex", alignItems: "center", padding: "10px" }}
+        onClick={handleNavigate}
+      >
+        {pathname === "/" && "Cards"}
+        {pathname === "/cards" && "Timeline"}
         <View
           size="32px"
           style={{

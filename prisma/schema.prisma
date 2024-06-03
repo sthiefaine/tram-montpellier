@@ -68,3 +68,13 @@ model Stop {
   order         Int
   tramwayLines  TramwayLine[] @relation("LineStops")
 }
+
+model LastFetchTweet {
+  id        Int      @id @default(1)
+  lastFetch DateTime
+}
+
+model LastReport {
+  id        Int      @id @default(1)
+  lastReport DateTime
+}

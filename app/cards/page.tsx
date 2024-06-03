@@ -11,7 +11,7 @@ export default async function Cards() {
       <Header />
       <DateSelector />
 
-      {<SectionCards />}
+      <SectionCards />
     </div>
   );
 }

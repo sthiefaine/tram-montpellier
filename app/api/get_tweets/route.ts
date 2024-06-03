@@ -11,6 +11,7 @@ import {
   parentIncident,
   updateIncident,
 } from "@/app/actions/incidents/incidents.actions";
+import { postLastFetchTweet } from "@/app/actions/fetch/fetch.actions";
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
   const lastTweets = await getLastTweet();
@@ -29,6 +30,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       status: 200,
     });
   } else {
+    await postLastFetchTweet();
     // SCANNING PROCESS TO GET INCIDENTS
     const responseText = await processTweetsForIncidents(savedTweets);
 

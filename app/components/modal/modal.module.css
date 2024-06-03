@@ -1,0 +1,16 @@
+.modal {
+  position: fixed;
+  z-index: 12;
+  top: 26%;
+  left: 10%;
+  width: 80%;
+  overflow: auto;
+}
+
+.modalContent {
+  background-color: #fefefe;
+  margin: 5% auto;
+  padding: 15px;
+  border: 1px solid #888;
+  width: 100%;
+}

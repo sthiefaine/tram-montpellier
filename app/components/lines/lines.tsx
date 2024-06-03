@@ -8,6 +8,7 @@ import {
 } from "@/app/actions/incidents/incidents.actions";
 import { useDateSelectorStore } from "@/store/dateSelector";
 import { Incident } from "@prisma/client";
+import { useShallow } from "zustand/react/shallow";
 
 const getHoursForSelectedDate = (dateSelected: Date) => {
   const dayOfWeek = dateSelected.getDay();
@@ -93,18 +94,33 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
 };
 
 export default function Lines() {
-  const dateSelected = useDateSelectorStore((state) => state.dateSelected);
+  const {
+    dateSelected,
+    lineSelected,
+    setLineSelected,
+    setModalIsOpen,
+    modalIsOpen,
+    incidentsToDisplay,
+    setIncidentToDisplay,
+  } = useDateSelectorStore(
+    useShallow((state) => ({
+      dateSelected: state.dateSelected,
+      lineSelected: state.lineSelected,
+      setLineSelected: state.setLineSelected,
+      setModalIsOpen: state.setModalIsOpen,
+      modalIsOpen: state.modalIsOpen,
+      incidentsToDisplay: state.incidentsToDisplay,
+      setIncidentToDisplay: state.setIncidentsToDisplay,
+    }))
+  );
   const intervals = generateTimeIntervals();
   const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
   const [incidents, setIncidents] = useState<Incident[] | null>(null);
-  const [incidentSelected, setIncidentSelected] = useState<Incident>();
-  const [lineSelected, setLineSelected] = useState<string>("");
 
   useEffect(() => {
     const fetchIncidents = async () => {
       const response = await getIncidentsAllForDate(dateSelected);
-      console.log(response[1].time.toTimeString().slice(0, 5));
       setIncidents(response);
     };
 
@@ -123,8 +139,10 @@ export default function Lines() {
 
   const handleIncidentClick = (lineNumber: string, timeString: string) => {
     const result = incidentsForLineOnInterval(lineNumber, timeString);
-    setIncidentSelected(result[0] || null);
+    if (result.length === 0) return;
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
+    setIncidentToDisplay(result);
+    setModalIsOpen(true);
   };
 
   return (
@@ -169,10 +187,7 @@ export default function Lines() {
               ></a>
             ))}
           </div>
-          <div className={styles.incidents}>
-            {lineSelected === line.numero &&
-              incidentSelected?.incidentDescription}
-          </div>
+          <div className={styles.incidents}></div>
         </div>
       ))}
     </div>

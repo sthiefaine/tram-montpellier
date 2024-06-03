@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lines from "../lines/lines";
 import styles from "./timeline.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
+import Modal from "../modal/modal";
 
 const generateHours = () => {
   const hours = [];
@@ -17,11 +18,13 @@ const generateHours = () => {
 export default function Timeline() {
   const date = new Date();
   const hours = generateHours();
-  const dateSelected = useDateSelectorStore((state) => state.dateSelected);
+  const { dateSelected, modalIsOpen, setModalIsOpen } = useDateSelectorStore(
+    (state) => state
+  );
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const isToday = dateSelected.toDateString() === new Date().toDateString();
   const targetHour = date.getHours();
-
+  const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!isToday) return;
     const scrollContainer = scrollContainerRef.current;
@@ -37,22 +40,41 @@ export default function Timeline() {
 
     const intervalId = setInterval(() => {
       scrollHorizontally();
-
-      // Nettoyer l'intervalle après le premier défilement
       clearInterval(intervalId);
     }, 1500);
   }, [isToday, targetHour]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      console.log(modalRef.current);
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setModalIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <section ref={scrollContainerRef} className={styles.section}>
-      <div className={styles.timeBar}>
-        {hours.map((hour, index) => (
-          <span key={index} className={styles.timeSpan}>
-            {hour}
-          </span>
-        ))}
-      </div>
-      <Lines />
-    </section>
+    <>
+      <section ref={scrollContainerRef} className={styles.section}>
+        <div className={styles.timeBar}>
+          {hours.map((hour, index) => (
+            <span key={index} className={styles.timeSpan}>
+              {hour}
+            </span>
+          ))}
+        </div>
+        <Lines />
+        {modalIsOpen && <Modal test={modalRef} />}
+      </section>
+    </>
   );
 }
