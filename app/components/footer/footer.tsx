@@ -34,6 +34,7 @@ export default async function Footer() {
     <div className={styles.footer}>
       <p> last update: {lastTweetDate}</p>
       <p> last Report: {lastReportDate}</p>
+      <span>version Alpha</span>
     </div>
   );
 }
