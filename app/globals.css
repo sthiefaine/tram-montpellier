@@ -16,9 +16,6 @@
   }
 }
 
-body {
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -29,9 +26,12 @@ body {
   display: block;
   float: left;
   height: 50px;
-  width: 2px;
+  width: 1px;
   background-color: #f2f2f2;
   cursor: pointer;
+}
+.i:hover {
+  background-color: #000 !important;
 }
 
 .i .no + .i10m {

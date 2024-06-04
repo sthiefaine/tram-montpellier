@@ -50,7 +50,7 @@ const generateTimeIntervals = () => {
   for (
     let minutes = startHour * 60;
     minutes < totalMinutesInDay + endHour * 60;
-    minutes += 2
+    minutes += 1
   ) {
     // 26 // to fix later :D
     const hour = Math.floor(minutes / 60) % 26;
@@ -117,6 +117,9 @@ export default function Lines() {
   const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
   const [incidents, setIncidents] = useState<Incident[] | null>(null);
+  const [numberOfIncidentsForLine, setNumberOfIncidentsForLine] = useState<any>(
+    {}
+  );
 
   useEffect(() => {
     const fetchIncidents = async () => {
@@ -126,6 +129,21 @@ export default function Lines() {
 
     fetchIncidents();
   }, [dateSelected]);
+
+  useEffect(() => {
+    const fetchIncidentsForLine = () => {
+      tramwayLines.forEach((line) => {
+        setNumberOfIncidentsForLine((prev: any) => ({
+          ...prev,
+          [line.numero]: incidents?.filter((incident) =>
+            incident.tramsImpacted.includes(line.numero)
+          ).length,
+        }));
+      });
+    };
+
+    fetchIncidentsForLine();
+  }, [incidents]);
 
   const incidentsForLineOnInterval = (line: string, interval: string) => {
     if (!incidents) return [];
@@ -142,23 +160,46 @@ export default function Lines() {
   const handleIncidentClick = (lineNumber: string, timeString: string) => {
     const result = incidentsForLineOnInterval(lineNumber, timeString);
     if (result.length === 0) return;
+    setModalIsOpen(true);
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
     setIncidentToDisplay(result);
+  };
+
+  const handleIncidentsClick = (lineNumber: string) => {
+    const incidentsList = incidents?.filter((incident) => {
+      return incident.tramsImpacted.includes(lineNumber);
+    });
+
+    const result = numberOfIncidentsForLine[lineNumber];
+
+    if (!result) return;
+    if (result === 0) return;
+    if (!incidentsList) return;
     setModalIsOpen(true);
+    setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
+    setIncidentToDisplay(incidentsList);
   };
 
   return (
     <div className={styles.lines}>
       {tramwayLines.map((line, index) => (
-        <div className={styles.lineContainer} key={index}>
+        <div className={styles.lineContainer} key={index + "-" + line.numero}>
           <div className={styles.line}>
-            <div className={styles.lineName}>
+            <div
+              className={styles.lineName}
+              onClick={() => handleIncidentsClick(line.numero)}
+            >
               <span
                 className={styles.numero}
                 style={{ backgroundColor: (line as { color: string }).color }}
               >
                 {(line as { numero: string }).numero}
               </span>
+              {numberOfIncidentsForLine?.[line.numero] > 0 && (
+                <span className={styles.badge}>
+                  {numberOfIncidentsForLine[line.numero]}
+                </span>
+              )}
             </div>
             {intervals.map((interval, index) => (
               <a
@@ -168,7 +209,7 @@ export default function Lines() {
                     interval.timeString
                   )
                 }
-                key={index}
+                key={index + "-" + interval.timeString}
                 className={
                   (isWithinTimeRange(interval.timeString, start, end)
                     ? incidentsForLineOnInterval(

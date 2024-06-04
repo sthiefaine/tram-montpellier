@@ -4,6 +4,7 @@ import Lines from "../lines/lines";
 import styles from "./timeline.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
 import Modal from "../modal/modal";
+import { useShallow } from "zustand/react/shallow";
 
 const generateHours = () => {
   const hours = [];
@@ -19,12 +20,17 @@ export default function Timeline() {
   const date = new Date();
   const hours = generateHours();
   const { dateSelected, modalIsOpen, setModalIsOpen } = useDateSelectorStore(
-    (state) => state
+    useShallow((state) => ({
+      dateSelected: state.dateSelected,
+      modalIsOpen: state.modalIsOpen,
+      setModalIsOpen: state.setModalIsOpen,
+    }))
   );
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const isToday = dateSelected.toDateString() === new Date().toDateString();
   const targetHour = date.getHours();
   const modalRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!isToday) return;
     const scrollContainer = scrollContainerRef.current;
@@ -72,7 +78,7 @@ export default function Timeline() {
           ))}
         </div>
         <Lines />
-        {modalIsOpen && <Modal test={modalRef} />}
+        {modalIsOpen && <Modal modalRef={modalRef} />}
       </section>
     </>
   );

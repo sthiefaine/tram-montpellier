@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: "État trafic tramway Montpellier",
 };
 
+export const revalidate = 600;
+
 export default function RootLayout({
   children,
 }: Readonly<{
