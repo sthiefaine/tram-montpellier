@@ -6,10 +6,14 @@ import { getTramwayLinesWithStops } from "../tramway/tramway.actions";
 import { postLastReport } from "../fetch/fetch.actions";
 
 export async function processTweetsForIncidents(tweets: Tweet[]) {
+  const startOfDay = new Date(new Date().setHours(0, 0, 0, 0));
   const previousIncidents = await prisma.incident.findMany({
     where: {
       incidentTerminated: false,
       allDay: false,
+      time: {
+        gte: startOfDay,
+      },
     },
     take: 4,
   });
@@ -29,7 +33,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
 
   console.log("context", context);
 
-  let prompt = `Voici la liste des tweets récent à analyser:\n\n`;
+  let prompt = `Voici la liste des tweets récent à analyser et la reponse en JSON:\n\n`;
   tweets.forEach((tweet, index) => {
     prompt += `Tweet ${tweet.tweetId} - ${tweet.TweetCreatedAt}: ${tweet.textContent}\n\n`;
   });
@@ -47,6 +51,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
 
   const incidents = openaiResponse.choices[0]?.message?.content?.trim() ?? "[]";
 
+  console.log("incidents response", incidents);
   await postLastReport();
 
   return incidents;

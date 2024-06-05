@@ -1,11 +1,8 @@
 import styles from "./lines.module.css";
 import { startDate } from "@/data/horaires";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { tramwayLinesData } from "@/data/lines";
-import {
-  getIncidentsAllForDate,
-  getIncidentsForDate,
-} from "@/app/actions/incidents/incidents.actions";
+import { getIncidentsAllForDate } from "@/app/actions/incidents/incidents.actions";
 import { useDateSelectorStore } from "@/store/dateSelector";
 import { Incident } from "@prisma/client";
 import { useShallow } from "zustand/react/shallow";
@@ -122,6 +119,7 @@ export default function Lines() {
   );
 
   useEffect(() => {
+    setNumberOfIncidentsForLine({});
     const fetchIncidents = async () => {
       const response = await getIncidentsAllForDate(dateSelected);
       setIncidents(response);
