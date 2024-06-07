@@ -1,6 +1,7 @@
+"use client";
 import styles from "./lines.module.css";
 import { startDate } from "@/data/horaires";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { tramwayLinesData } from "@/data/lines";
 import { getIncidentsAllForDate } from "@/app/actions/incidents/incidents.actions";
 import { useDateSelectorStore } from "@/store/dateSelector";
@@ -8,8 +9,6 @@ import { Incident } from "@prisma/client";
 import { useShallow } from "zustand/react/shallow";
 
 const getHoursForSelectedDate = (dateSelected: Date) => {
-  const dayOfWeek = dateSelected.getDay();
-  let hours = null;
   const daysOfWeek = [
     "dimanche",
     "lundi",
@@ -19,27 +18,33 @@ const getHoursForSelectedDate = (dateSelected: Date) => {
     "vendredi",
     "samedi",
   ];
-
-  const todayText = daysOfWeek[dayOfWeek];
+  const todayText = daysOfWeek[dateSelected.getDay()];
 
   for (const entry of startDate) {
-    const days = entry.when.split(", ").map((day) => day.trim());
-    if (days.includes(todayText)) {
-      return (hours = {
-        start: entry.start,
-        end: entry.end,
-      });
+    if (
+      entry.when
+        .split(", ")
+        .map((day) => day.trim())
+        .includes(todayText)
+    ) {
+      return { start: entry.start, end: entry.end };
     }
   }
 
-  return (hours = {
-    start: "04h30",
-    end: "02h00",
-  });
+  return { start: "04h30", end: "02h00" };
 };
 
-const generateTimeIntervals = () => {
-  const intervals = [];
+type Intervals = {
+  timeString: string;
+  classes: string[];
+  isRunning?: boolean;
+  incidents?: {
+    [key: string]: boolean;
+  };
+};
+
+const generateTimeIntervals = (): Intervals[] => {
+  const intervals: Intervals[] = [];
   const startHour = 4;
   const endHour = 3;
   const totalMinutesInDay = 24 * 60;
@@ -71,23 +76,15 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
   const [endHour, endMinute] = end.split("h").map(Number);
   const [currentHour, currentMinute] = time.split(":").map(Number);
 
-  const startTime = new Date();
-  startTime.setHours(startHour, startMinute, 0, 0);
+  const startMinutes = startHour * 60 + startMinute;
+  const endMinutes = endHour * 60 + endMinute;
+  const currentMinutes = currentHour * 60 + currentMinute;
 
-  const endTime = new Date();
-  endTime.setHours(endHour, endMinute, 0, 0);
-
-  const currentTime = new Date();
-  currentTime.setHours(currentHour, currentMinute, 0, 0);
-
-  if (
-    endHour < startHour ||
-    (endHour === startHour && endMinute < startMinute)
-  ) {
-    endTime.setDate(endTime.getDate() + 1);
+  if (endMinutes < startMinutes) {
+    return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
   }
 
-  return currentTime >= startTime && currentTime <= endTime;
+  return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
 };
 
 export default function Lines() {
@@ -110,13 +107,46 @@ export default function Lines() {
       setIncidentToDisplay: state.setIncidentsToDisplay,
     }))
   );
-  const intervals = generateTimeIntervals();
+
   const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
   const [incidents, setIncidents] = useState<Incident[] | null>(null);
   const [numberOfIncidentsForLine, setNumberOfIncidentsForLine] = useState<any>(
     {}
   );
+  const [intervals, setIntervals] = useState<Intervals[]>(
+    generateTimeIntervals()
+  );
+
+  useEffect(() => {
+    if (!start || !end) return;
+    setIntervals(
+      intervals.map((interval) => ({
+        ...interval,
+        isRunning: isWithinTimeRange(interval.timeString, start, end),
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [start, end]);
+
+  useEffect(() => {
+    if (!incidents) return;
+    setIntervals(
+      intervals.map((interval) => ({
+        ...interval,
+        incidents: tramwayLines.reduce(
+          (acc: { [key: string]: boolean }, line) => {
+            acc[line.numero] =
+              incidentsForLineOnInterval(line.numero, interval.timeString)
+                .length > 0;
+            return acc;
+          },
+          {}
+        ),
+      }))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [incidents]);
 
   useEffect(() => {
     setNumberOfIncidentsForLine({});
@@ -129,6 +159,7 @@ export default function Lines() {
   }, [dateSelected]);
 
   useEffect(() => {
+    if (!incidents) return;
     const fetchIncidentsForLine = () => {
       tramwayLines.forEach((line) => {
         setNumberOfIncidentsForLine((prev: any) => ({
@@ -139,9 +170,8 @@ export default function Lines() {
         }));
       });
     };
-
     fetchIncidentsForLine();
-  }, [incidents]);
+  }, [incidents, tramwayLines]);
 
   const incidentsForLineOnInterval = (line: string, interval: string) => {
     if (!incidents) return [];
@@ -158,9 +188,9 @@ export default function Lines() {
   const handleIncidentClick = (lineNumber: string, timeString: string) => {
     const result = incidentsForLineOnInterval(lineNumber, timeString);
     if (result.length === 0) return;
-    setModalIsOpen(true);
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
     setIncidentToDisplay(result);
+    setModalIsOpen(true);
   };
 
   const handleIncidentsClick = (lineNumber: string) => {
@@ -169,13 +199,12 @@ export default function Lines() {
     });
 
     const result = numberOfIncidentsForLine[lineNumber];
-
     if (!result) return;
     if (result === 0) return;
     if (!incidentsList) return;
-    setModalIsOpen(true);
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
     setIncidentToDisplay(incidentsList);
+    setModalIsOpen(true);
   };
 
   return (
@@ -199,7 +228,7 @@ export default function Lines() {
                 </span>
               )}
             </div>
-            {intervals.map((interval, index) => (
+            {intervals.map((interval: any, index: number) => (
               <a
                 onClick={() =>
                   handleIncidentClick(
@@ -209,22 +238,14 @@ export default function Lines() {
                 }
                 key={index + "-" + interval.timeString}
                 className={
-                  (isWithinTimeRange(interval.timeString, start, end)
-                    ? incidentsForLineOnInterval(
-                        (line as { numero: string }).numero,
-                        interval.timeString
-                      ).length > 0
+                  (interval.isRunning
+                    ? interval.incidents?.[line.numero]
                       ? "incident"
                       : "ok"
                     : "no") +
                   " " +
                   interval.classes.join(" ")
                 }
-                title={`${interval.timeString}%${
-                  isWithinTimeRange(interval.timeString, start, end)
-                    ? "ok"
-                    : "no"
-                }%`}
               ></a>
             ))}
           </div>

@@ -65,7 +65,8 @@ export default function Timeline() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalRef]);
 
   return (
     <>
@@ -78,7 +79,7 @@ export default function Timeline() {
           ))}
         </div>
         <Lines />
-        {modalIsOpen && <Modal modalRef={modalRef} />}
+        <Modal modalRef={modalRef} />
       </section>
     </>
   );

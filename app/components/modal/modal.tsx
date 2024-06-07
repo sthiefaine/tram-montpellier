@@ -1,23 +1,31 @@
+"use client";
 import { useDateSelectorStore } from "@/store/dateSelector";
 import styles from "./modal.module.css";
 import { CircleX } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
+import { useEffect } from "react";
 
 type ModalProps = {
-  modalRef: React.RefObject<HTMLDivElement>;
+  modalRef?: React.RefObject<HTMLDivElement>;
   children?: React.ReactNode;
 };
 
 export default function Modal({ modalRef, children }: ModalProps) {
-  const { incidentsToDisplay, setModalIsOpen } = useDateSelectorStore(
-    useShallow((state) => ({
-      incidentsToDisplay: state.incidentsToDisplay,
-      setModalIsOpen: state.setModalIsOpen,
-    }))
-  );
+  const { incidentsToDisplay, setModalIsOpen, modalIsOpen } =
+    useDateSelectorStore(
+      useShallow((state) => ({
+        incidentsToDisplay: state.incidentsToDisplay,
+        setModalIsOpen: state.setModalIsOpen,
+        modalIsOpen: state.modalIsOpen,
+      }))
+    );
+
+  if (!modalIsOpen) {
+    return null;
+  }
 
   return (
-    <div ref={modalRef} className={styles.modal}>
+    <div ref={modalRef} className={`${styles.modal}`}>
       <div className={styles.modalHeader}>
         <p className={styles.time}>
           {incidentsToDisplay[0]?.time.toLocaleTimeString("fr-FR", {

@@ -62,6 +62,7 @@ export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
 }
 
 export async function createIncident(filteredIncidentsJson: parentIncident) {
+  console.log("filteredIncidentsJson", filteredIncidentsJson);
   const createIncident = await prisma.incident.createMany({
     data: filteredIncidentsJson.incident.map((incident: Incident) => ({
       ...incident,

@@ -62,14 +62,17 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     };
 
     if (filteredIncidentsJson.incident.length !== 0) {
+      console.log("===> CREATE INCIDENT");
       await createIncident(filteredIncidentsJson);
     }
 
     if (filteredIncidentsJson.incidentModifications.length !== 0) {
+      console.log("===> UPDATE INCIDENT");
       await updateIncident(filteredIncidentsJson);
     }
 
     if (filteredIncidentsJson.incidentClose.length !== 0) {
+      console.log("===> CLOSE INCIDENT");
       await closeIncident(filteredIncidentsJson);
     }
 

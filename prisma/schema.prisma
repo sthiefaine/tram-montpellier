@@ -43,6 +43,7 @@ model Incident {
     incidentTerminated   Boolean   @default(false)
     incidentDuration     Int?
     allDay              Boolean   @default(false)
+    incidentEnd          Boolean? @default(false)
     createdAt            DateTime  @default(now())
     updatedAt            DateTime  @updatedAt
 }
