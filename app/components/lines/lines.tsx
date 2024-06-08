@@ -199,7 +199,6 @@ export default function Lines() {
     });
 
     const result = numberOfIncidentsForLine[lineNumber];
-    if (!result) return;
     if (result === 0) return;
     if (!incidentsList) return;
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
@@ -236,7 +235,13 @@ export default function Lines() {
                     interval.timeString
                   )
                 }
-                key={index + "-" + interval.timeString}
+                key={
+                  index +
+                  "-" +
+                  interval.timeString +
+                  "-" +
+                  interval.incidents?.[line.numero]
+                }
                 className={
                   (interval.isRunning
                     ? interval.incidents?.[line.numero]
