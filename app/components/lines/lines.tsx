@@ -1,7 +1,7 @@
 "use client";
 import styles from "./lines.module.css";
 import { startDate } from "@/data/horaires";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { tramwayLinesData } from "@/data/lines";
 import { getIncidentsAllForDate } from "@/app/actions/incidents/incidents.actions";
 import { useDateSelectorStore } from "@/store/dateSelector";
@@ -80,8 +80,11 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
   const endMinutes = endHour * 60 + endMinute;
   const currentMinutes = currentHour * 60 + currentMinute;
 
-  if (endMinutes < startMinutes) {
-    return currentMinutes >= startMinutes || currentMinutes <= endMinutes;
+  if (
+    endMinutes < startMinutes ||
+    (endHour === startHour && endMinute < startMinute)
+  ) {
+    return currentMinutes >= startMinutes;
   }
 
   return currentMinutes >= startMinutes && currentMinutes <= endMinutes;
@@ -93,8 +96,6 @@ export default function Lines() {
     lineSelected,
     setLineSelected,
     setModalIsOpen,
-    modalIsOpen,
-    incidentsToDisplay,
     setIncidentToDisplay,
   } = useDateSelectorStore(
     useShallow((state) => ({
@@ -102,8 +103,6 @@ export default function Lines() {
       lineSelected: state.lineSelected,
       setLineSelected: state.setLineSelected,
       setModalIsOpen: state.setModalIsOpen,
-      modalIsOpen: state.modalIsOpen,
-      incidentsToDisplay: state.incidentsToDisplay,
       setIncidentToDisplay: state.setIncidentsToDisplay,
     }))
   );
@@ -178,9 +177,7 @@ export default function Lines() {
     return incidents?.filter((incident) => {
       return (
         incident.tramsImpacted.includes(line) &&
-        incident.time
-          .toLocaleTimeString("fr-FR", { timeZone: "UTC" })
-          .slice(0, 5) === interval
+        incident.time.toLocaleTimeString("fr-FR").slice(0, 5) === interval
       );
     });
   };

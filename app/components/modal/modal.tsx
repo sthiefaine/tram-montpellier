@@ -29,7 +29,6 @@ export default function Modal({ modalRef, children }: ModalProps) {
       <div className={styles.modalHeader}>
         <p className={styles.time}>
           {incidentsToDisplay[0]?.time.toLocaleTimeString("fr-FR", {
-            timeZone: "UTC",
             hour: "2-digit",
             minute: "2-digit",
           })}

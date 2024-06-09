@@ -17,8 +17,6 @@ const generateHours = () => {
 };
 
 export default function Timeline() {
-  const date = new Date();
-  const hours = generateHours();
   const { dateSelected, modalIsOpen, setModalIsOpen } = useDateSelectorStore(
     useShallow((state) => ({
       dateSelected: state.dateSelected,
@@ -26,9 +24,14 @@ export default function Timeline() {
       setModalIsOpen: state.setModalIsOpen,
     }))
   );
+  const todayDate = new Date();
+  const isToday =
+    dateSelected.getDate() === todayDate.getDate() &&
+    dateSelected.getMonth() === todayDate.getMonth() &&
+    dateSelected.getFullYear() === todayDate.getFullYear();
+  const hours = generateHours();
   const scrollContainerRef = useRef<HTMLElement | null>(null);
-  const isToday = dateSelected.toDateString() === new Date().toDateString();
-  const targetHour = date.getHours();
+  const targetHour = todayDate.getHours();
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -3,7 +3,7 @@ export const generateContext = (
   previousActifIncidentsList: any
 ) => {
   return `
-  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT TOUS LES INCIDENTS OU LA FIN D'UN INCIDENTS sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux.
+  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT TOUS LES INCIDENTS QUI ENGENDRE DES PROBLEMES DE CIRCULATIONS OU LA FIN D'UN INCIDENTS sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux.
 
   Liste des incidents actifs précédents :
   ${JSON.stringify(previousActifIncidentsList, null, 2)}
@@ -22,7 +22,7 @@ export const generateContext = (
      - incidentDescription : description concise de l'incident
      - tramsImpacted : lignes de tramway impactées [1, 2, 3, 4, 5] (STRING[])
      - tramsImpactedAccuracy : précision en %
-     - localisationIncident : localisation de l'incident (STRING)
+     - localisationIncident : localisation de l'incident (STRING or "")
      - impactedStation : stations potentiellement impactées (STRING[])
      - impactedStationAccuracy : précision en %
      - estimatedStartTime : date de début estimée de l'incident ou null

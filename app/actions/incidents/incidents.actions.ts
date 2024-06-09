@@ -29,11 +29,11 @@ export async function getIncidentsTerminated() {
 
 export async function getIncidentsAllForDate(date: Date) {
   const startDate = date;
-  const startOfDay = new Date(startDate.setUTCHours(0, 0, 0, 0));
+  const startOfDay = new Date(startDate.setHours(0, 0, 0, 0));
   // next day at 2am
   const endDate = date;
   const endOfDay = new Date(
-    endDate.setDate(endDate.getDate() + 1) && endDate.setUTCHours(2, 0, 0, 0)
+    endDate.setDate(endDate.getDate() + 1) && endDate.setHours(2, 0, 0, 0)
   );
 
   const incidents = await prisma.incident.findMany({
@@ -50,8 +50,8 @@ export async function getIncidentsAllForDate(date: Date) {
 export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
   const startDate = date;
   const endDate = date;
-  const startOfDay = new Date(startDate.setUTCHours(0, 0, 0, 0));
-  const endOfDay = new Date(endDate.setUTCHours(23, 59, 59, 999));
+  const startOfDay = new Date(startDate.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(endDate.setHours(23, 59, 59, 999));
 
   const incidents = await prisma.incident.findMany({
     where: {
