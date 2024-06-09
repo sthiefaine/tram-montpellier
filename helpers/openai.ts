@@ -15,7 +15,7 @@ export const generateContext = (
   1. Ne pas retourner de doublons d'incidents. Si un incident est déjà en cours, ne pas le signaler à nouveau.
   2. Si un incident a été modifié, fournir les détails dans un objet parent "incidentModifications".
   3. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
-     - time : heure de l'incident dans le tweet en format ISO-8601 DateTime.
+     - time : heure de l'incident en format ISO-8601 DateTime.
      - tweetId : tweetId (STRING)
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial ou mis à jour (STRING)
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)

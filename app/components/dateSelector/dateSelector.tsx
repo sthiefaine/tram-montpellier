@@ -7,7 +7,9 @@ import { useDateSelectorStore } from "@/store/dateSelector";
 
 export default function DateSelector() {
   const { dateSelected, setDateSelected } = useDateSelectorStore();
-  const isToday = dateSelected.toDateString() === new Date().toDateString();
+  const isToday =
+    dateSelected.toLocaleDateString("fr-fr", { timeZone: "UTC" }) ===
+    new Date().toLocaleDateString("fr-fr", { timeZone: "UTC" });
 
   const handleChangedate = (isIncrement: boolean) => {
     if (isToday && isIncrement) return;
@@ -24,7 +26,7 @@ export default function DateSelector() {
         <CircleArrowLeft />
       </button>
       <span className={styles.date}>
-        {dateSelected.toLocaleDateString("fr-fr")}
+        {dateSelected.toLocaleDateString("fr-fr", { timeZone: "UTC" })}
       </span>
       <button onClick={() => handleChangedate(true)} disabled={isToday}>
         <CircleArrowRight color={isToday ? "grey" : "black"} />
