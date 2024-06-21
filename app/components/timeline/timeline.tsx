@@ -24,7 +24,13 @@ export default function Timeline() {
       setModalIsOpen: state.setModalIsOpen,
     }))
   );
-  const todayDate = new Date();
+
+  const todayDate = new Date(
+    new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
+      new Date()
+    )
+  );
+
   const isToday =
     dateSelected.getDate() === todayDate.getDate() &&
     dateSelected.getMonth() === todayDate.getMonth() &&
