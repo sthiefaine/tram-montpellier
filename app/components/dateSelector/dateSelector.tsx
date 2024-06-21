@@ -19,7 +19,12 @@ export default function DateSelector() {
 
   const handleChangeDate = (isIncrement: boolean) => {
     if (isToday && isIncrement) return;
-    const newDate = new Date(dateSelected);
+    const newDate = new Date(
+      new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
+        dateSelected
+      )
+    );
+
     isIncrement
       ? newDate.setDate(newDate.getDate() + 1)
       : newDate.setDate(newDate.getDate() - 1);
