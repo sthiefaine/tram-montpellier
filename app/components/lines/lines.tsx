@@ -7,6 +7,8 @@ import { getIncidentsAllForDate } from "@/app/actions/incidents/incidents.action
 import { useDateSelectorStore } from "@/store/dateSelector";
 import { Incident } from "@prisma/client";
 import { useShallow } from "zustand/react/shallow";
+import { toTimeZone } from "@/helpers/date";
+import { toDate } from "date-fns-tz";
 
 const getHoursForSelectedDate = (dateSelected: Date) => {
   const daysOfWeek = [
@@ -96,16 +98,8 @@ export default function Lines() {
     lineSelected,
     setLineSelected,
     setModalIsOpen,
-    setIncidentToDisplay,
-  } = useDateSelectorStore(
-    useShallow((state) => ({
-      dateSelected: state.dateSelected,
-      lineSelected: state.lineSelected,
-      setLineSelected: state.setLineSelected,
-      setModalIsOpen: state.setModalIsOpen,
-      setIncidentToDisplay: state.setIncidentsToDisplay,
-    }))
-  );
+    setIncidentsToDisplay,
+  } = useDateSelectorStore();
 
   const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
@@ -175,6 +169,7 @@ export default function Lines() {
   const incidentsForLineOnInterval = (line: string, interval: string) => {
     if (!incidents) return [];
     return incidents?.filter((incident) => {
+      // TODO: fix this
       return (
         incident.tramsImpacted.includes(line) &&
         incident.time.toLocaleTimeString("fr-FR").slice(0, 5) === interval
@@ -186,7 +181,7 @@ export default function Lines() {
     const result = incidentsForLineOnInterval(lineNumber, timeString);
     if (result.length === 0) return;
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
-    setIncidentToDisplay(result);
+    setIncidentsToDisplay(result);
     setModalIsOpen(true);
   };
 
@@ -199,7 +194,7 @@ export default function Lines() {
     if (result === 0) return;
     if (!incidentsList) return;
     setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
-    setIncidentToDisplay(incidentsList);
+    setIncidentsToDisplay(incidentsList);
     setModalIsOpen(true);
   };
 

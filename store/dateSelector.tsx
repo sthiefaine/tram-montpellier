@@ -19,11 +19,7 @@ export type DateSelectorActions = {
 export type DateSelectorStore = DateSelectorState & DateSelectorActions;
 
 export const defaultInitState: DateSelectorStore = {
-  dateSelected: new Date(
-    new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
-      new Date()
-    )
-  ),
+  dateSelected: new Date(),
   setDateSelected: () => {},
   modalIsOpen: false,
   setModalIsOpen: () => {},

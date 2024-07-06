@@ -13,18 +13,17 @@ export const generateContext = (
 
   Règles à suivre :
   1. Ne pas retourner de doublons d'incidents. Si un incident est déjà en cours, ne pas le signaler à nouveau.
-  2. Si un incident a été modifié, fournir les détails dans un objet parent "incidentModifications".
-  3. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
-     - time : heure de l'incident en format ISO-8601 DateTime.
-     - tweetId : tweetId (STRING)
-     - keyTweetIdIncident : le tweetId correspondant à l'incident initial ou mis à jour (STRING)
+  2. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
+     - time : datetime in format "2024-08-17T14:43:00" return it like "2024-08-17T14:43:00+02:00" +2 need to be current Paris/France timezone.
+     - tweetId : tweetId to STRING
+     - keyTweetIdIncident : le tweetId correspondant à l'incident initial to STRING
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)
      - incidentDescription : description concise de l'incident
      - tramsImpacted : lignes de tramway impactées [1, 2, 3, 4, 5] (STRING[])
-     - tramsImpactedAccuracy : précision en %
-     - localisationIncident : localisation de l'incident (STRING or "")
+     - tramsImpactedAccuracy : précision en % (Float)
+     - localisationIncident : localisation de l'incident return (STRING)
      - impactedStation : stations potentiellement impactées (STRING[])
-     - impactedStationAccuracy : précision en %
+     - impactedStationAccuracy : précision en % (Float)
      - estimatedStartTime : date de début estimée de l'incident ou null
      - estimatedEndTime : date de fin estimée de l'incident ou null
      - incidentTerminated : booléen indiquant si l'incident est terminé ou non
@@ -43,7 +42,6 @@ export const generateContext = (
   Je dois retourner une reponse en Format JSON :
   [{
     "incident": { /* détails de l'incident */ },
-    "incidentModifications": { /* modifications de l'incident */ }
   }]
   `;
 };

@@ -4,14 +4,13 @@
 import { CircleArrowLeft, CircleArrowRight } from "lucide-react";
 import styles from "./dateSelector.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
+import { useState } from "react";
 
 export default function DateSelector() {
   const { dateSelected, setDateSelected } = useDateSelectorStore();
-  const todayDate = new Date(
-    new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
-      new Date()
-    )
-  );
+  const [newDate, setNewDate] = useState<Date>(dateSelected);
+  const todayDate = new Date();
+
   const isToday =
     dateSelected.getDate() === todayDate.getDate() &&
     dateSelected.getMonth() === todayDate.getMonth() &&
@@ -19,16 +18,14 @@ export default function DateSelector() {
 
   const handleChangeDate = (isIncrement: boolean) => {
     if (isToday && isIncrement) return;
-    const newDate = new Date(
-      new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
-        dateSelected
+
+    setDateSelected(
+      new Date(
+        isIncrement
+          ? newDate.setDate(newDate.getDate() + 1)
+          : newDate.setDate(newDate.getDate() - 1)
       )
     );
-
-    isIncrement
-      ? newDate.setDate(newDate.getDate() + 1)
-      : newDate.setDate(newDate.getDate() - 1);
-    setDateSelected(newDate);
   };
 
   return (

@@ -2,6 +2,8 @@
 import prisma from "@/lib/prisma";
 import { Incident } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { toTimeZone } from "@/helpers/date";
+import { toDate } from "date-fns-tz";
 
 export type parentIncident = {
   incident: Incident[];
@@ -39,11 +41,12 @@ export async function getIncidentsAllForDate(date: Date) {
   const incidents = await prisma.incident.findMany({
     where: {
       time: {
-        gte: startOfDay,
-        lte: endOfDay,
+        gte: toTimeZone(startOfDay),
+        lte: toTimeZone(endOfDay),
       },
     },
   });
+
   return incidents;
 }
 
@@ -57,8 +60,8 @@ export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
     where: {
       incidentTerminated: isTerminated,
       time: {
-        gte: startOfDay,
-        lte: endOfDay,
+        gte: toTimeZone(startOfDay),
+        lte: toTimeZone(endOfDay),
       },
     },
   });
@@ -66,9 +69,19 @@ export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
 }
 
 export async function createIncident(filteredIncidentsJson: parentIncident) {
-  console.log("filteredIncidentsJson", filteredIncidentsJson);
+  const uptadeTime = filteredIncidentsJson.incident.map((incident) => {
+    return {
+      ...incident,
+      localisationIncident:
+        incident.localisationIncident === null
+          ? ""
+          : incident.localisationIncident,
+      time: incident.time,
+    };
+  });
+
   const createIncident = await prisma.incident.createMany({
-    data: filteredIncidentsJson.incident.map((incident: Incident) => ({
+    data: uptadeTime.map((incident: Incident) => ({
       ...incident,
     })),
     skipDuplicates: true,
@@ -78,23 +91,45 @@ export async function createIncident(filteredIncidentsJson: parentIncident) {
 }
 
 export async function updateIncident(filteredIncidentsJson: parentIncident) {
-  const updateIncident = await filteredIncidentsJson.incidentModifications.map(
-    async (incident: Incident) => {
-      await prisma.incident.update({
-        where: {
-          tweetId: incident.keyTweetIdIncident,
-        },
-        data: {
-          ...incident,
-        },
-      });
+  const uptadeTime = filteredIncidentsJson.incidentModifications.map(
+    (incident) => {
+      return {
+        ...incident,
+        localisationIncident:
+          incident.localisationIncident === null
+            ? ""
+            : incident.localisationIncident,
+        time: incident.time,
+      };
     }
   );
+
+  const updateIncident = await uptadeTime.map(async (incident: Incident) => {
+    await prisma.incident.update({
+      where: {
+        tweetId: incident.keyTweetIdIncident,
+      },
+      data: {
+        ...incident,
+      },
+    });
+  });
   revalidatePath("/");
   return updateIncident;
 }
 
 export async function closeIncident(filteredIncidentsJson: parentIncident) {
+  filteredIncidentsJson.incidentClose.map((incident) => {
+    return {
+      ...incident,
+      localisationIncident:
+        incident.localisationIncident === null
+          ? ""
+          : incident.localisationIncident,
+      time: incident.time,
+    };
+  });
+
   const closeIncident = await prisma.incident.createMany({
     data: filteredIncidentsJson.incidentClose.map((incident: Incident) => ({
       ...incident,
