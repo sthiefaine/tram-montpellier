@@ -31,13 +31,13 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
     previousActifIncidentsList
   );
 
-  let prompt = `Voici la liste des tweets récent à analyser et la reponse en JSON:\n\n`;
+  let prompt = `Voici la liste des tweets récent à analyser et la reponse en JSON {[]}:\n\n`;
   tweets.forEach((tweet, index) => {
     prompt += `Tweet ${tweet.tweetId} - ${tweet.TweetCreatedAt}: ${tweet.textContent}\n\n`;
   });
 
   const openaiResponse = await openai.chat.completions.create({
-    model: "llama-3-8b-instruct",
+    model: "llama-3.1-8b-instruct",
     stream: false,
     messages: [
       { role: "system", content: context },

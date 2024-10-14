@@ -19,13 +19,13 @@ export const generateContext = (
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial to STRING
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)
      - incidentDescription : description concise de l'incident
-     - tramsImpacted : lignes de tramway impactées [1, 2, 3, 4, 5] (STRING[])
+     - tramsImpacted : lignes de tramway impactées 1, 2, 3, 4, 5 return STRING[]
      - tramsImpactedAccuracy : précision en % (Float)
      - localisationIncident : localisation de l'incident return (STRING)
      - impactedStation : stations potentiellement impactées (STRING[])
      - impactedStationAccuracy : précision en % (Float)
-     - estimatedStartTime : date de début estimée de l'incident ou null
-     - estimatedEndTime : date de fin estimée de l'incident ou null
+     - estimatedStartTime : date de début estimée de l'incident ISO-8601 DateTime ou null
+     - estimatedEndTime : date de fin estimée de l'incident ISO-8601 DateTime ou null
      - incidentTerminated : booléen indiquant si l'incident est terminé ou non
      - incidentDuration : durée de l'incident en minutes ou null
      - allDay : booléen indiquant si l'incident dure toute la journée ou non.
