@@ -53,8 +53,16 @@ export async function getIncidentsAllForDate(date: Date) {
 export async function getIncidentsForDate(date: Date, isTerminated: boolean) {
   const startDate = date;
   const endDate = date;
+
   const startOfDay = new Date(startDate.setHours(0, 0, 0, 0));
-  const endOfDay = new Date(endDate.setHours(23, 59, 59, 999));
+  const endOfDay = new Date(
+    endDate.setDate(endDate.getDate() + 1) && endDate.setHours(2, 0, 0, 0)
+  );
+
+  console.log("startDate", startDate);
+  console.log("startOfDay", startOfDay);
+  console.log("endDate", endDate);
+  console.log("endOfDay", endOfDay);
 
   const incidents = await prisma.incident.findMany({
     where: {
