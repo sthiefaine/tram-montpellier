@@ -88,7 +88,7 @@ export default function Timeline() {
           ))}
         </div>
         <Lines />
-        <Modal modalRef={modalRef} />
+        {modalIsOpen && <Modal modalRef={modalRef} />}
       </section>
     </>
   );
