@@ -3,7 +3,6 @@ import { useDateSelectorStore } from "@/store/dateSelector";
 import styles from "./modal.module.css";
 import { CircleX } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
-import { useEffect } from "react";
 
 type ModalProps = {
   modalRef?: React.RefObject<HTMLDivElement>;

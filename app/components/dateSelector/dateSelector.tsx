@@ -34,7 +34,7 @@ export default function DateSelector() {
         <CircleArrowLeft />
       </button>
       <span className={styles.date}>
-        {dateSelected.toLocaleDateString("fr-fr")}
+        {dateSelected.toLocaleDateString("fr-FR")}
       </span>
       <button onClick={() => handleChangeDate(true)} disabled={isToday}>
         <CircleArrowRight color={isToday ? "grey" : "black"} />

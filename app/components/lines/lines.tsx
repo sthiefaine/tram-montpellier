@@ -6,9 +6,6 @@ import { tramwayLinesData } from "@/data/lines";
 import { getIncidentsAllForDate } from "@/app/actions/incidents/incidents.actions";
 import { useDateSelectorStore } from "@/store/dateSelector";
 import { Incident } from "@prisma/client";
-import { useShallow } from "zustand/react/shallow";
-import { toTimeZone } from "@/helpers/date";
-import { toDate } from "date-fns-tz";
 
 const getHoursForSelectedDate = (dateSelected: Date) => {
   const daysOfWeek = [
