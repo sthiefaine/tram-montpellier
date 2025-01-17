@@ -14,7 +14,7 @@ export const generateContext = (
   Règles à suivre :
   1. Ne pas retourner de doublons d'incidents. Si un incident est déjà en cours, ne pas le signaler à nouveau.
   2. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
-     - time : datetime in format "2024-08-17T14:43:00" return it like "2024-08-17T14:43:00+02:00" +2 need to be current Paris/France timezone.
+     - time : datetime in format "2024-08-17T14:43:00" return like "2024-08-17T14:43:00+02:00" need to be current Paris/France timezone.
      - tweetId : tweetId to STRING
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial to STRING
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)
@@ -22,7 +22,7 @@ export const generateContext = (
      - tramsImpacted : lignes de tramway impactées 1, 2, 3, 4, 5 return STRING[]
      - tramsImpactedAccuracy : précision en % (Float)
      - localisationIncident : localisation de l'incident return (STRING)
-     - impactedStation : stations potentiellement impactées (STRING[])
+     - impactedStation : stations potentiellement impactées ( retrun STRING[])
      - impactedStationAccuracy : précision en % (Float)
      - estimatedStartTime : date de début estimée de l'incident ISO-8601 DateTime ou null
      - estimatedEndTime : date de fin estimée de l'incident ISO-8601 DateTime ou null
@@ -39,7 +39,7 @@ export const generateContext = (
      - Date de fin
      - keyTweetIdIncident : doit correspondre au tweetId de l'incident à modifier.
 
-  Je dois retourner une reponse en Format JSON :
+  RETOURNE UNE REPONSE AU FORMAT JSON UNIQUEMENT :
   [{
     "incident": { /* détails de l'incident */ },
   }]
