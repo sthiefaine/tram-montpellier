@@ -1,5 +1,5 @@
 import { generateContext } from "@/helpers/openai";
-import { openai } from "@/lib/openai";
+import { openai, openAIModel } from "@/lib/openai";
 import prisma from "@/lib/prisma";
 import { Tweet } from "@prisma/client";
 import { getTramwayLinesWithStops } from "../tramway/tramway.actions";
@@ -37,7 +37,7 @@ export async function processTweetsForIncidents(tweets: Tweet[]) {
   });
 
   const openaiResponse = await openai.chat.completions.create({
-    model: "llama-3.1-8b-instruct",
+    model: openAIModel,
     stream: false,
     messages: [
       { role: "system", content: context },

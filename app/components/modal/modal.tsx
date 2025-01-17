@@ -20,7 +20,7 @@ export default function Modal({ modalRef, children }: ModalProps) {
     );
 
   if (!modalIsOpen) {
-    return null;
+    return <></>;
   }
 
   return (
