@@ -1,7 +1,7 @@
 export const maxDuration = 200;
 export const dynamic = "force-dynamic";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getLastTweet } from "./captureTweets";
 import { saveTweets } from "@/app/actions/tweets/tweets.actions";
 import { processTweetsForIncidents } from "@/app/actions/tweets/incidents.action";
@@ -13,7 +13,7 @@ import {
 } from "@/app/actions/incidents/incidents.actions";
 import { postLastFetchTweet } from "@/app/actions/fetch/fetch.actions";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET() {
   const lastTweets = await getLastTweet();
 
   const savedTweets = await saveTweets(lastTweets);
