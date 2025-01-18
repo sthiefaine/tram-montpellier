@@ -1,6 +1,6 @@
 "use client";
 /* eslint-disable react/no-unescaped-entities */
-import { View } from "lucide-react";
+
 import styles from "./header.module.css";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -28,7 +28,7 @@ export function Header() {
         <h1 className={styles.title}>Tramway de Montpellier</h1>
         <h2 className={styles.subtitle}>Suivi de l'état du trafic</h2>
       </span>
-      <button
+{/*       <button
         style={{ display: "flex", alignItems: "center", padding: "10px" }}
         onClick={handleNavigate}
       >
@@ -40,7 +40,7 @@ export function Header() {
             marginLeft: "20px",
           }}
         />
-      </button>
+      </button> */}
     </header>
   );
 }

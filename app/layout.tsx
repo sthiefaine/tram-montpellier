@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "./variables.css";
+import 'leaflet/dist/leaflet.css'
 import Footer from "./components/footer/footer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -41,6 +42,7 @@ export default function RootLayout({
           href="/favicon-16x16.png"
         />
         <link rel="manifest" href="/site.webmanifest"></link>
+        
       </head>
       <body className={inter.className}>
         <> {children}</>
