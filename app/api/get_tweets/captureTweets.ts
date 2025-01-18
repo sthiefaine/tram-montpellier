@@ -143,6 +143,7 @@ export const getLastTweet = async () => {
 
   // Initialize puppeteer
   console.log("initializing puppeteer");
+  // eslint-disable-next-line no-var
   var page = await browser.newPage();
   const userAgent =
     "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.80 Mobile/15E148 Safari/604.1";
@@ -316,7 +317,7 @@ export const getLastTweet = async () => {
       previousSession.cookie as unknown as string
     );
     if (cookiesArr.length !== 0) {
-      for (let cookie of cookiesArr) {
+      for (const cookie of cookiesArr) {
         await page.setCookie(cookie);
       }
       console.log("Session has been loaded in the browser");

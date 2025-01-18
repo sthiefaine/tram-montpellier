@@ -13,7 +13,7 @@ import {
 } from "@/app/actions/incidents/incidents.actions";
 import { postLastFetchTweet } from "@/app/actions/fetch/fetch.actions";
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export async function GET(req: NextRequest, res: NextResponse) {
   const lastTweets = await getLastTweet();
 
   const savedTweets = await saveTweets(lastTweets);

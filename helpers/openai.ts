@@ -3,7 +3,7 @@ export const generateContext = (
   previousActifIncidentsList: any
 ) => {
   return `
-  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT TOUS LES INCIDENTS OU LA FIN D'UN INCIDENTS sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux et test, essaies.
+  IMPORTANT : JE DOIS FILTRER LES TWEETS POUR TRAITER UNIQUEMENT TOUS LES INCIDENTS OU LA FIN D'UN INCIDENTS sur les lignes de tramway 1, 2, 3, 4, 5, je ne dois pas prendre en compte les travaux et test, parking, essais....
 
   Liste des incidents actifs précédents :
   ${JSON.stringify(previousActifIncidentsList, null, 2)}

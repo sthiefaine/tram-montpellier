@@ -22,7 +22,7 @@ interface Stop {
   external_id: string;
 }
 
-export const GET = async () => {
+  export async function GET(){
   const data = await fetch(
     "https://cartographie.tam-voyages.com/gtfs/stopsarea"
   ).then((res) => res.json());

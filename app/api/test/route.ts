@@ -42,7 +42,7 @@ async function processTweetsForIncidents(tweets: Tweet[]) {
   return generateContext(tramwayLinesWithStops, previousActifIncidentsList);
 }
 
-export const GET = async () => {
+export async function GET() {
   const test = await processTweetsForIncidents([]);
   return new NextResponse(JSON.stringify(test), {
     status: 200,

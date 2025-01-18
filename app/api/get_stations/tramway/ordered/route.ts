@@ -72,7 +72,7 @@ const linesMock = [
   },
 ];
 
-export const GET = async () => {
+export async function GET(){
   const lines = await fetch(
     "https://cartographie.tam-voyages.com/gtfs/lignes"
   ).then((res) => res.json());
