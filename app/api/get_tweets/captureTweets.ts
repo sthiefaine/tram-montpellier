@@ -1,3 +1,4 @@
+export const maxDuration = 300
 import puppeteer, { KnownDevices } from "puppeteer-core";
 import chromium from "@sparticuz/chromium-min";
 import { Tweet } from "./types";
@@ -171,7 +172,7 @@ export const getLastTweet = async () => {
     ///////////////////////////////////////////////////////////////////////////////////
     // Sometimes twitter suspect suspicious activties, so it ask for your handle/phone Number
     console.log("TRY TO FIND USERNAME INPUT");
-    const extractedText = await page.$eval("*", (el: any) => el.innerText);
+    const extractedText = await page.$eval("*", (el: HTMLElement) => el.innerText);
     if (
       extractedText.includes("username") ||
       extractedText.includes("utilisateur")
@@ -244,7 +245,7 @@ export const getLastTweet = async () => {
     const url = `${url_x}${process.env.TARGET_USER_NAME as string}`;
     console.log(`capturing tweets from ${url}`);
     await page.goto(mockURL || url, { waitUntil: "networkidle2" });
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(2500);
     try {
       // Check if the login button exists
       console.log("Checking for login button on profil page");

@@ -1,4 +1,29 @@
-import { PoiData } from "@/app/components/tramMap/tramMapLeafLet";
+type FeatureProperties = {
+  id: string;
+  couleur_border: string;
+  OLDcouleur_border: string;
+  pointille_ligne: string;
+  epaisseur_ligne: string;
+  couleur_ligne: string;
+  pointille_border: string;
+  ligneId: string;
+  OLDcouleur_ligne: string;
+  code_ligne: string;
+  desc: string;
+  titre_ligne: string;
+};
+
+type Feature = {
+  type: string;
+  id: number;
+  properties: FeatureProperties;
+  geometry: {
+    type: string
+    coordinates: number[][]
+  }
+};
+
+export type PoiData = Feature[]
 
 export const poiData: PoiData = [
   {

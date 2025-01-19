@@ -5,7 +5,6 @@ specifiers:
   '@prisma/client': ^5.14.0
   '@sparticuz/chromium-min': ^119.0.2
   '@types/jsdom': ^21.1.7
-  '@types/leaflet': ^1.9.16
   '@types/mapbox-gl': ^3.4.1
   '@types/node': ^20
   '@types/react': ^18
@@ -22,11 +21,11 @@ specifiers:
   openai: ^4.47.1
   postcss: ^8
   prisma: ^5.14.0
+  prop-types: ^15.6.2
   puppeteer: ^22.9.0
   puppeteer-core: ^21.11.0
-  react: 19.0.0-rc.1
-  react-dom: 19.0.0-rc.1
-  react-leaflet: 5.0.0-rc.2
+  react: ^18
+  react-dom: ^18
   react-map-gl: ^7.1.8
   react-mapbox-gl: ^5.1.1
   tailwind-merge: ^2.6.0
@@ -44,27 +43,26 @@ dependencies:
   date-fns-tz: 3.2.0_date-fns@4.1.0
   fs: 0.0.1-security
   leaflet: 1.9.4
-  lucide-react: 0.379.0_react@19.0.0-rc.1
+  lucide-react: 0.379.0_react@18.3.1
   mapbox-gl: 3.9.3
-  next: 15.1.4_gqw3jw462bgxrxzxnoloxhptm4
+  next: 15.1.4_nnrd3gsncyragczmpvfhocinkq
   openai: 4.79.1
   prisma: 5.22.0
+  prop-types: 15.8.1
   puppeteer: 22.15.0_typescript@5.7.3
   puppeteer-core: 21.11.0
-  react: 19.0.0-rc.1
-  react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
-  react-leaflet: 5.0.0-rc.2_uvh2nl5rcv5cib5es5hyxo5mzu
-  react-map-gl: 7.1.8_nbfl2hdbpiybbmz5ixp7ngxywm
-  react-mapbox-gl: 5.1.1_nbfl2hdbpiybbmz5ixp7ngxywm
+  react: 18.3.1
+  react-dom: 18.3.1_react@18.3.1
+  react-map-gl: 7.1.8_m25enxsmq5fhacjzcdpj24yavu
+  react-mapbox-gl: 5.1.1_iokft5jgymaebyjuwjfmjfq6tq
   tailwind-merge: 2.6.0
   tailwindcss-animate: 1.0.7_tailwindcss@3.4.17
   tall: 8.0.0
-  zustand: 4.5.6_ys335pbcdwxkls6tnkffy5p7nu
+  zustand: 4.5.6_x25zuu6u7xhdvbznsywf7wxevq
 
 devDependencies:
   '@eslint/eslintrc': 3.2.0
   '@types/jsdom': 21.1.7
-  '@types/leaflet': 1.9.16
   '@types/node': 20.17.14
   '@types/react': 18.3.18
   '@types/react-dom': 18.3.5_@types+react@18.3.18
@@ -648,18 +646,6 @@ packages:
       - supports-color
     dev: false
 
-  /@react-leaflet/core/3.0.0_uvh2nl5rcv5cib5es5hyxo5mzu:
-    resolution: {integrity: sha512-3EWmekh4Nz+pGcr+xjf0KNyYfC3U2JjnkWsh0zcqaexYqmmB5ZhH37kz41JXGmKzpaMZCnPofBBm64i+YrEvGQ==}
-    peerDependencies:
-      leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
-    dependencies:
-      leaflet: 1.9.4
-      react: 19.0.0-rc.1
-      react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
-    dev: false
-
   /@rtsao/scc/1.1.0:
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
     dev: true
@@ -719,6 +705,7 @@ packages:
 
   /@types/geojson/7946.0.15:
     resolution: {integrity: sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==}
+    dev: false
 
   /@types/jsdom/21.1.7:
     resolution: {integrity: sha512-yOriVnggzrnQ3a9OKOCxaVuSug3w3/SbOj5i7VwXWZEyUNl3bLF9V3MfxGbZKuwqJOQyRfqXyROBB1CoZLFWzA==}
@@ -734,12 +721,6 @@ packages:
 
   /@types/json5/0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-    dev: true
-
-  /@types/leaflet/1.9.16:
-    resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
-    dependencies:
-      '@types/geojson': 7946.0.15
     dev: true
 
   /@types/mapbox-gl/3.4.1:
@@ -1300,8 +1281,8 @@ packages:
     resolution: {integrity: sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==}
     engines: {node: '>= 6'}
 
-  /caniuse-lite/1.0.30001692:
-    resolution: {integrity: sha512-A95VKan0kdtrsnMubMKxEKUKImOPSuCpYgxSQBo036P5YYgVIcOYJEgt/txJWqObiRQeISNCfef9nvlQ0vbV7A==}
+  /caniuse-lite/1.0.30001695:
+    resolution: {integrity: sha512-vHyLade6wTgI2u1ec3WQBxv+2BrTERV28UXQu9LO6lZ9pYeMk34vjXFLOxo1A4UBA8XTL4njRQZdno/yYaSmWw==}
     dev: false
 
   /chalk/4.1.2:
@@ -2112,7 +2093,7 @@ packages:
     engines: {node: '>= 10.17.0'}
     hasBin: true
     dependencies:
-      debug: 4.4.0
+      debug: 4.3.4
       get-stream: 5.2.0
       yauzl: 2.10.0
     optionalDependencies:
@@ -2337,7 +2318,7 @@ packages:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.4.0
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2450,7 +2431,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2460,7 +2441,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2870,7 +2851,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: true
 
   /lru-cache/10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
@@ -2880,12 +2860,12 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /lucide-react/0.379.0_react@19.0.0-rc.1:
+  /lucide-react/0.379.0_react@18.3.1:
     resolution: {integrity: sha512-KcdeVPqmhRldldAAgptb8FjIunM2x2Zy26ZBh1RsEUcdLIvsEmbcw7KpzFYUy5BbpGeWhPu9Z9J5YXfStiXwhg==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 19.0.0-rc.1
+      react: 18.3.1
     dev: false
 
   /mapbox-gl/3.9.3:
@@ -3008,7 +2988,7 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: false
 
-  /next/15.1.4_gqw3jw462bgxrxzxnoloxhptm4:
+  /next/15.1.4_nnrd3gsncyragczmpvfhocinkq:
     resolution: {integrity: sha512-mTaq9dwaSuwwOrcu3ebjDYObekkxRnXpuVL21zotM8qE2W0HBOdVIdg2Li9QjMEZrj73LN96LcWcz62V19FjAg==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
     hasBin: true
@@ -3033,11 +3013,11 @@ packages:
       '@swc/counter': 0.1.3
       '@swc/helpers': 0.5.15
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001692
+      caniuse-lite: 1.0.30001695
       postcss: 8.4.31
-      react: 19.0.0-rc.1
-      react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
-      styled-jsx: 5.1.6_react@19.0.0-rc.1
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
+      styled-jsx: 5.1.6_react@18.3.1
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.1.4
       '@next/swc-darwin-x64': 15.1.4
@@ -3212,7 +3192,7 @@ packages:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.3.4
       get-uri: 6.0.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
@@ -3409,7 +3389,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
@@ -3420,7 +3399,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.3.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
@@ -3525,33 +3504,20 @@ packages:
     resolution: {integrity: sha512-XdjUArbK4Bm5fLLvlm5KpTFOiOThgfWWI4axAZDWg4E/0mKdZyI9tNEfds27qCi1ze/vwTR16kvmmGhRra3c2g==}
     dev: false
 
-  /react-dom/19.0.0-rc.1_react@19.0.0-rc.1:
-    resolution: {integrity: sha512-k8MfDX+4G+eaa1cXXI9QF4d+pQtYol3nx8vauqRWUEOPqC7NQn2qmEqUsLoSd28rrZUL+R3T2VC+kZ2Hyx1geQ==}
+  /react-dom/18.3.1_react@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
-      react: 19.0.0-rc.1
+      react: ^18.3.1
     dependencies:
-      react: 19.0.0-rc.1
-      scheduler: 0.25.0-rc.1
+      loose-envify: 1.4.0
+      react: 18.3.1
+      scheduler: 0.23.2
     dev: false
 
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
-  /react-leaflet/5.0.0-rc.2_uvh2nl5rcv5cib5es5hyxo5mzu:
-    resolution: {integrity: sha512-1xQGYG9mEIW+nfkQhqgHImwUuB1UDlnzYFSzv6PrBFDBeYrFmv0BbpwpNAFdJg/UQ2yz5UZSL7ZwlUxjwb8MZw==}
-    peerDependencies:
-      leaflet: ^1.9.0
-      react: ^19.0.0
-      react-dom: ^19.0.0
-    dependencies:
-      '@react-leaflet/core': 3.0.0_uvh2nl5rcv5cib5es5hyxo5mzu
-      leaflet: 1.9.4
-      react: 19.0.0-rc.1
-      react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
-    dev: false
-
-  /react-map-gl/7.1.8_nbfl2hdbpiybbmz5ixp7ngxywm:
+  /react-map-gl/7.1.8_m25enxsmq5fhacjzcdpj24yavu:
     resolution: {integrity: sha512-zwF16XMOdOKH4py5ehS1bgQIChqW8UN3b1bXps+JnADbYLSbOoUPQ3tNw0EZ2OTBWArR5aaQlhlEqg4lE47T8A==}
     peerDependencies:
       mapbox-gl: '>=1.13.0'
@@ -3567,11 +3533,11 @@ packages:
       '@maplibre/maplibre-gl-style-spec': 19.3.3
       '@types/mapbox-gl': 3.4.1
       mapbox-gl: 3.9.3
-      react: 19.0.0-rc.1
-      react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
     dev: false
 
-  /react-mapbox-gl/5.1.1_nbfl2hdbpiybbmz5ixp7ngxywm:
+  /react-mapbox-gl/5.1.1_iokft5jgymaebyjuwjfmjfq6tq:
     resolution: {integrity: sha512-8vGldFQf7pW8T5ZV2OOhwXoaBvfigB2F7dnhzaZ/bD5/KJzP9zprMbn0xMX95W3eqbKzGGHnwyD5DyTTwR6wGw==}
     peerDependencies:
       mapbox-gl: ^1.12.0
@@ -3584,14 +3550,17 @@ packages:
       '@types/supercluster': 5.0.3
       deep-equal: 1.0.1
       mapbox-gl: 3.9.3
-      react: 19.0.0-rc.1
-      react-dom: 19.0.0-rc.1_react@19.0.0-rc.1
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1_react@18.3.1
       supercluster: 7.1.5
     dev: false
 
-  /react/19.0.0-rc.1:
-    resolution: {integrity: sha512-NZKln+uyPuyHchzP07I6GGYFxdAoaKhehgpCa3ltJGzwE31OYumLeshGaitA1R/fS5d9D2qpZVwTFAr6zCLM9w==}
+  /react/18.3.1:
+    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
+    dependencies:
+      loose-envify: 1.4.0
     dev: false
 
   /read-cache/1.0.0:
@@ -3709,8 +3678,10 @@ packages:
       is-regex: 1.2.1
     dev: true
 
-  /scheduler/0.25.0-rc.1:
-    resolution: {integrity: sha512-fVinv2lXqYpKConAMdergOl5owd0rY1O4P/QTe0aWKCqGtu7VsCt1iqQFxSJtqK4Lci/upVSBpGwVC7eWcuS9Q==}
+  /scheduler/0.23.2:
+    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
+    dependencies:
+      loose-envify: 1.4.0
     dev: false
 
   /semver/6.3.1:
@@ -3871,7 +3842,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0
+      debug: 4.3.4
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -4053,7 +4024,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /styled-jsx/5.1.6_react@19.0.0-rc.1:
+  /styled-jsx/5.1.6_react@18.3.1:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -4067,7 +4038,7 @@ packages:
         optional: true
     dependencies:
       client-only: 0.0.1
-      react: 19.0.0-rc.1
+      react: 18.3.1
     dev: false
 
   /sucrase/3.35.0:
@@ -4357,12 +4328,12 @@ packages:
     resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
     dev: false
 
-  /use-sync-external-store/1.4.0_react@19.0.0-rc.1:
+  /use-sync-external-store/1.4.0_react@18.3.1:
     resolution: {integrity: sha512-9WXSPC5fMv61vaupRkCKCxsPxBocVnwakBEkMIHHpkTTg6icbJtg6jzgtLDm4bl3cSHAca52rYWih0k4K3PfHw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
-      react: 19.0.0-rc.1
+      react: 18.3.1
     dev: false
 
   /util-deprecate/1.0.2:
@@ -4546,7 +4517,7 @@ packages:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
 
-  /zustand/4.5.6_ys335pbcdwxkls6tnkffy5p7nu:
+  /zustand/4.5.6_x25zuu6u7xhdvbznsywf7wxevq:
     resolution: {integrity: sha512-ibr/n1hBzLLj5Y+yUcU7dYw8p6WnIVzdJbnX+1YpaScvZVF2ziugqHs+LAmHw4lWO9c/zRj+K1ncgWDQuthEdQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -4562,6 +4533,6 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.3.18
-      react: 19.0.0-rc.1
-      use-sync-external-store: 1.4.0_react@19.0.0-rc.1
+      react: 18.3.1
+      use-sync-external-store: 1.4.0_react@18.3.1
     dev: false

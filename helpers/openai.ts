@@ -19,7 +19,7 @@ export const generateContext = (
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial to STRING
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)
      - incidentDescription : description concise de l'incident
-     - tramsImpacted : lignes de tramway impactées 1, 2, 3, 4, 5 return STRING[]
+     - tramsImpacted : 1, 2, 3, 4, 5 ... return STRING[] like ["1", "2", "3", "4", "5"]
      - tramsImpactedAccuracy : précision en % (Float)
      - localisationIncident : localisation de l'incident return (STRING)
      - impactedStation : stations potentiellement impactées ( retrun STRING[])

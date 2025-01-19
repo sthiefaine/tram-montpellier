@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
 import Map, { Layer, LngLatBoundsLike, Source } from "react-map-gl";
 import { poiData } from "@/data/poi";
 import { tramwayLinesData } from "@/data/lines";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_GL_TOKEN;
@@ -34,7 +32,7 @@ export const Mapgl = () => {
         initialViewState={{
           longitude: MONTPELLIER_COORDINATES.lng,
           latitude: MONTPELLIER_COORDINATES.lat,
-          zoom: 10.55,
+          zoom: 10.35,
         }}
         minZoom={10}
         maxBounds={bounds}
@@ -74,7 +72,7 @@ export const Mapgl = () => {
                     id={`route-${poi.id}-${index}-dashed`}
                     type="line"
                     paint={{
-                      "line-color": 'yellow',
+                      "line-color": 'red',
                       "line-width": 2,
                       "line-dasharray": [3,3]
                     }}

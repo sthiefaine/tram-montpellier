@@ -2,7 +2,6 @@
 //https://cartographie.tam-voyages.com/gtfs/ligne/1/ordered-arrets
 
 import prisma from "@/lib/prisma";
-import { access } from "fs";
 
 interface Stop {
   id: string;
@@ -82,7 +81,7 @@ export async function GET(){
   );
 
   const tramwayLinesWithStops = await Promise.all(
-    tramsLines.map(async (line: any) => {
+    tramsLines.map(async (line: TramwayLine) => {
       const response = await fetch(
         `https://cartographie.tam-voyages.com/gtfs/ligne/${line.id}/ordered-arrets`
       );
