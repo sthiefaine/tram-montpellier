@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import { Incident } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { toTimeZone } from "@/helpers/date";
-import { toDate } from "date-fns-tz";
 
 export type parentIncident = {
   incident: Incident[];

@@ -3,7 +3,8 @@
 import DateSelector from "./components/dateSelector/dateSelector";
 import Timeline from "./components/timeline/timeline";
 import { Header } from "./components/header/header";
-import { TramMap } from "./components/tramMap/tramMap";
+import { TramMap } from "./components/tramMap/tramMapLeafLet";
+import { Mapgl } from "./components/tramMap/mapgl";
 
 
 export default async function Page() {
@@ -12,7 +13,8 @@ export default async function Page() {
       <Header />
       <DateSelector />
       <Timeline />
-      <TramMap />
+      <Mapgl />
+{/*       <TramMap /> */}
     </div>
   );
 }

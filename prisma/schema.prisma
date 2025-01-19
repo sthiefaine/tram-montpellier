@@ -53,7 +53,7 @@ model TramwayLine {
   nom          String
   numero       String
   couleur      String
-  externalCode String
+  externalCode String   @unique
   name         String
   commercialId String
   stops        Stop[]    @relation("LineStops")
@@ -63,6 +63,9 @@ model Stop {
   id            Int         @id @default(autoincrement())
   nom           String
   code          String
+  lat           String?
+  lng           String?
+  accessible    Boolean?
   direction     Boolean
   logical_stop  String
   isTerminus    Boolean

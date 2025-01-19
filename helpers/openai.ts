@@ -14,7 +14,7 @@ export const generateContext = (
   Règles à suivre :
   1. Ne pas retourner de doublons d'incidents. Si un incident est déjà en cours, ne pas le signaler à nouveau.
   2. Pour un nouvel incident, le placer dans un objet parent "incident" avec les champs suivants :
-     - time : datetime in format "2024-08-17T14:43:00" return like "2024-08-17T14:43:00+02:00" need to be current Paris/France timezone.
+     - time : datetime in format "2024-08-17T14:43:00" return like "2024-08-17T14:43:00+02:00" +0X:00 is current UTC for Paris
      - tweetId : tweetId to STRING
      - keyTweetIdIncident : le tweetId correspondant à l'incident initial to STRING
      - incidentType : type d'incident (ex. "perturbation", "blocage", "accident", "travaux", "manifestation", "déviation", "malaise"...)

@@ -2,6 +2,7 @@
 //https://cartographie.tam-voyages.com/gtfs/ligne/1/ordered-arrets
 
 import prisma from "@/lib/prisma";
+import { access } from "fs";
 
 interface Stop {
   id: string;
@@ -94,6 +95,9 @@ export async function GET(){
         direction: stop.direction,
         logical_stop: stop.logical_stop,
         isTerminus: stop.isTerminus,
+        lat: stop.lat,
+        lng: stop.lng,
+        accessible: stop.accessible ?? false,
       }));
 
       const parsedLine = {
@@ -139,6 +143,9 @@ export async function GET(){
               direction: stop.direction ?? false,
               logical_stop: stop.logical_stop,
               isTerminus: stop.isTerminus ?? false,
+              lat: stop.lat,
+              lng: stop.lng,
+              accessible: stop.accessible,
               order: index + 1,
             })),
           },

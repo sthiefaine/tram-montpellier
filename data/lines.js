@@ -2,6 +2,7 @@ export const tramwayLinesData = [
   {
     nom: "Mosson - Odysseum",
     numero: "1",
+    code: "1",
     color: "#005CA9",
     stops: [
       "Mosson",
@@ -39,6 +40,7 @@ export const tramwayLinesData = [
   {
     nom: "SAINT-JEAN DE VÉDAS Centre - Notre-Dame de Sablassou / Jacou",
     numero: "2",
+    code: "12",
     color: "#EF7D00",
     stops: [
       "Saint-Jean de Védas Centre",
@@ -74,6 +76,7 @@ export const tramwayLinesData = [
   {
     nom: "Juvignac - Lattes Centre / Pérols Étang de l'Or",
     numero: "3",
+    code: "22",
     color: "#C8D400",
     stops: [
       "Pérols Étang de l'Or",
@@ -108,6 +111,7 @@ export const tramwayLinesData = [
   {
     nom: "A / B Garcia Lorca",
     numero: "4",
+    code: "33",
     color: "#4B2A0E",
     stops: [
       "Garcia Lorca",
