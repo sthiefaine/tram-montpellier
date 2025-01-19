@@ -5,6 +5,7 @@ import { create } from "zustand";
 export type DateSelectorState = {
   dateSelected: Date;
   modalIsOpen: boolean;
+  mapIsOpen: boolean;
   lineSelected: string;
   incidentsToDisplay: Incident[];
 };
@@ -12,6 +13,7 @@ export type DateSelectorState = {
 export type DateSelectorActions = {
   setDateSelected: (date: Date) => void;
   setModalIsOpen: (isOpen: boolean) => void;
+  setMapIsOpen: (isOpen: boolean) => void;
   setLineSelected: (line: string) => void;
   setIncidentsToDisplay: (incidents: Incident[]) => void;
 };
@@ -23,6 +25,8 @@ export const defaultInitState: DateSelectorStore = {
   setDateSelected: () => {},
   modalIsOpen: false,
   setModalIsOpen: () => {},
+  mapIsOpen: false,
+  setMapIsOpen: () => {},
   lineSelected: "",
   setLineSelected: () => {},
   incidentsToDisplay: [],
@@ -36,4 +40,5 @@ export const useDateSelectorStore = create<DateSelectorStore>((set) => ({
   setLineSelected: (line: string) => set({ lineSelected: line }),
   setIncidentsToDisplay: (incidents: Incident[]) =>
     set({ incidentsToDisplay: incidents }),
+  setMapIsOpen: (isOpen: boolean) => set({ mapIsOpen: isOpen }),
 }));

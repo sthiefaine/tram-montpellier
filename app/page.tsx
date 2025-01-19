@@ -2,7 +2,8 @@
 import DateSelector from "./components/dateSelector/dateSelector";
 import Timeline from "./components/timeline/timeline";
 import { Header } from "./components/header/header";
-import { Mapgl } from "./components/tramMap/mapgl";
+import { BigModal } from "./components/bigModal/bigModal";
+import { Button } from "./components/Button/Button";
 
 
 export default async function Page() {
@@ -11,7 +12,9 @@ export default async function Page() {
       <Header />
       <DateSelector />
       <Timeline />
-      <Mapgl />
+      <Button />
+      <BigModal />
+      
     </div>
   );
 }

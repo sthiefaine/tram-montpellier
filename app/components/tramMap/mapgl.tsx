@@ -27,7 +27,7 @@ const groupedData = Object.groupBy(poiData, (poi) => poi.properties.code_ligne);
 export const Mapgl = () => {
 
   return (
-    <div className="flex flex-col items-center justify-center pb-20">
+    <div className="flex flex-col items-center justify-center pb-5">
       <Map
         initialViewState={{
           longitude: MONTPELLIER_COORDINATES.lng,
