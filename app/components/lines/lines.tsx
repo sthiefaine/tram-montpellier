@@ -215,32 +215,34 @@ export default function Lines() {
                 </span>
               )}
             </div>
-            {intervals.map((interval: any, index: number) => (
-              <a
-                onClick={() =>
-                  handleIncidentClick(
-                    (line as { numero: string }).numero,
-                    interval.timeString
-                  )
-                }
-                key={
-                  index +
-                  "-" +
-                  interval.timeString +
-                  "-" +
-                  interval.incidents?.[line.numero]
-                }
-                className={
-                  (interval.isRunning
-                    ? interval.incidents?.[line.numero]
-                      ? "incident"
-                      : "ok"
-                    : "no") +
-                  " " +
-                  interval.classes.join(" ")
-                }
-              ></a>
-            ))}
+            {intervals.map((interval: any, index: number) => {
+              return (
+                <a
+                  onClick={() =>
+                    handleIncidentClick(
+                      (line as { numero: string }).numero,
+                      interval.timeString
+                    )
+                  }
+                  key={
+                    index +
+                    "-" +
+                    interval.timeString +
+                    "-" +
+                    interval.incidents?.[line.numero]
+                  }
+                  className={
+                    (interval.isRunning
+                      ? interval.incidents?.[line.numero]
+                        ? "incident"
+                        : "ok"
+                      : "no") +
+                    " " +
+                    interval.classes.join(" ")
+                  }
+                ></a>
+              );
+            })}
           </div>
           <div className={styles.incidents}></div>
         </div>

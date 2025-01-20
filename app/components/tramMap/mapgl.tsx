@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import Map, { Layer, LngLatBoundsLike, Source } from "react-map-gl";
+import { createRoot } from "react-dom/client";
+import { useEffect, useRef, useState } from "react";
+import Map, { Layer, LngLatBoundsLike, MapRef, Source } from "react-map-gl";
 import { linesData } from "@/data/lineGeometry";
 import { stopsData } from "@/data/stop";
 import Image from "next/image";
 import "mapbox-gl/dist/mapbox-gl.css";
+import mapboxgl, { GeoJSONFeature, MapMouseEvent } from "mapbox-gl";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_GL_TOKEN;
 
@@ -27,7 +29,6 @@ const createAggregatedStops = () => {
   return {
     type: "FeatureCollection",
     features: stopsData.features.flatMap((stop) => {
-
       const lignesPassantes = stop.properties.lignes_passantes
         .split(";")
         .map((ligne) => ligne.trim());
@@ -51,6 +52,8 @@ const createAggregatedStops = () => {
             lineCount: lignesPassantes.length,
             line: ligne,
             index: index,
+            description: stop.properties.description,
+            line_description: stop.properties.lignes_passantes,
           },
         };
       });
@@ -62,6 +65,64 @@ const createAggregatedStops = () => {
 
 export const Mapgl = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const mapRef = useRef<MapRef | null>(null);
+  const popupRef = useRef<mapboxgl.Popup | null>(null);
+
+  useEffect(() => {
+    popupRef.current = new mapboxgl.Popup({
+      closeButton: true,
+      closeOnClick: true,
+    });
+
+    return () => {
+      popupRef.current?.remove();
+    };
+  }, []);
+
+  const popUp = (feature: GeoJSONFeature) => {
+    return (
+      <div
+        id="customPopup"
+        style={{
+          fontFamily: "Arial, sans-serif",
+          fontSize: "14px",
+          lineHeight: "1.5",
+          color: "#333",
+          marginTop: "10px",
+        }}
+      >
+        <p style={{ margin: "4px 0" }}>
+          <strong style={{ color: "#007acc" }}>Station:</strong>{" "}
+          {feature.properties?.description || "N/A"}
+        </p>
+        <p style={{ margin: "4px 0" }}>
+          <strong style={{ color: "#007acc" }}>Ligne:</strong>{" "}
+          {feature.properties?.line_description || "N/A"}
+        </p>
+      </div>
+    );
+  };
+
+  const handleMapClick = (e: MapMouseEvent) => {
+    const map = mapRef.current?.getMap();
+    const features = map?.queryRenderedFeatures(e.point, {
+      layers: ["stops-layer", "stops-layer-unique"],
+    });
+
+    if (features && features.length > 0) {
+      const feature = features[0];
+
+      const popupContainer = document.createElement("div");
+
+      const root = createRoot(popupContainer);
+      root.render(popUp(feature));
+
+      popupRef.current
+        ?.setLngLat(e.lngLat)
+        .setDOMContent(popupContainer)
+        .addTo(map!);
+    }
+  };
 
   return (
     <div className="relative flex flex-col items-center justify-center pb-5">
@@ -80,6 +141,7 @@ export const Mapgl = () => {
         />
       )}
       <Map
+        ref={mapRef}
         initialViewState={{
           longitude: MONTPELLIER_COORDINATES.lng,
           latitude: MONTPELLIER_COORDINATES.lat,
@@ -95,6 +157,7 @@ export const Mapgl = () => {
         mapStyle="mapbox://styles/mapbox/streets-v10?optimize=true"
         mapboxAccessToken={MAPBOX_TOKEN}
         onLoad={() => setIsMapLoaded(true)}
+        onClick={handleMapClick}
       >
         {linesData.features.map((line, index) => {
           const ligneId = line.properties.id_lignes_sens + "-" + index;

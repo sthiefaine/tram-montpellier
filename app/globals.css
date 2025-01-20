@@ -61,10 +61,39 @@
   background-color: red;
 }
 
+.incident.terminated::after {
+  background-color: green;
+}
+
 .i10m {
   border-left: 1px solid #f2f2f2;
 }
 
 .i1h {
   border-left: 2px solid #fff;
+}
+
+.mapboxgl-popup-close-button {
+
+  border: none;
+  color: #007acc; 
+  font-size: 20px;
+  padding: 2px; 
+  cursor: pointer;
+  border-radius: 0 8px 0 8px !important;
+  transition: transform 0.3s ease, color 0.3s ease; 
+}
+
+.mapboxgl-popup-close-button:hover {
+  color: #ff5733;
+  transform: scale(1.2); 
+}
+
+.mapboxgl-popup {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  padding: 0;
+  max-width: 300px;
+  border-radius: 5px;
 }
