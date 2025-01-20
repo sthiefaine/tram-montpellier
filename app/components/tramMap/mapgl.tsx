@@ -1,12 +1,11 @@
 "use client";
 
-import Map, { Layer, LngLatBoundsLike, Source } from "react-map-gl";
-import { poiData } from "@/data/poi";
-import { stopsData } from "@/data/stop";
-import { tramwayLinesData } from "@/data/lines";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { useState } from "react";
+import Map, { Layer, LngLatBoundsLike, Source } from "react-map-gl";
+import { linesData } from "@/data/lineGeometry";
+import { stopsData } from "@/data/stop";
 import Image from "next/image";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_GL_TOKEN;
 
@@ -15,20 +14,55 @@ const MONTPELLIER_COORDINATES = {
   lng: 3.878014,
 };
 
-// dont move too far from the City
+// Don't move too far from the City
 const bounds: LngLatBoundsLike = [
   [3.738, 43.524], // Southwest coordinates
   [4.018, 43.706], // Northeast coordinates
 ];
 
-const tramwayLineCodeNames = tramwayLinesData.map(
-  (line) => `TAM${line.numero}`
-);
+/**
+ * Create aggregated stops GeoJSON
+ */
+const createAggregatedStops = () => {
+  return {
+    type: "FeatureCollection",
+    features: stopsData.features.flatMap((stop) => {
 
-const groupedData = Object.groupBy(poiData, (poi) => poi.properties.code_ligne);
+      const lignesPassantes = stop.properties.lignes_passantes
+        .split(";")
+        .map((ligne) => ligne.trim());
+
+      // Pour chaque ligne passante un nouveau stop avec la couleur associée
+      const stops = lignesPassantes.map((ligne, index) => {
+        const stopColor =
+          linesData.features.find(
+            (line) => line.properties.num_exploitation === Number(ligne)
+          )?.properties.code_couleur ?? "black";
+
+        // Retourner un nouveau stop pour chaque ligne
+        return {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: stop.geometry.coordinates,
+          },
+          properties: {
+            color: stopColor,
+            lineCount: lignesPassantes.length,
+            line: ligne,
+            index: index,
+          },
+        };
+      });
+
+      return stops;
+    }),
+  };
+};
 
 export const Mapgl = () => {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+
   return (
     <div className="relative flex flex-col items-center justify-center pb-5">
       {!isMapLoaded && (
@@ -41,7 +75,7 @@ export const Mapgl = () => {
           style={{
             position: "absolute",
             top: -1,
-            left: 0,
+            left: 0.6,
           }}
         />
       )}
@@ -62,81 +96,67 @@ export const Mapgl = () => {
         mapboxAccessToken={MAPBOX_TOKEN}
         onLoad={() => setIsMapLoaded(true)}
       >
-        {tramwayLineCodeNames?.map((codeName) =>
-          groupedData[codeName]?.map((poi, index) => {
-            const isDashed = poi.properties.pointille_ligne === "dash";
-
-            return (
-              <Source
-                key={`source-${poi.id}-${index}`}
-                id={`route-${poi.id}-${index}`}
-                type="geojson"
-                data={{
-                  type: "Feature",
-                  properties: {},
-                  geometry: {
-                    type: "LineString",
-                    coordinates: poi.geometry?.coordinates,
-                  },
-                }}
-              >
-                <Layer
-                  id={`route-${poi.id}-${index}`}
-                  type="line"
-                  paint={{
-                    "line-color": poi.properties.OLDcouleur_ligne,
-                    "line-width": 3,
-                  }}
-                />
-                {isDashed && (
-                  <Layer
-                    id={`route-${poi.id}-${index}-dashed`}
-                    type="line"
-                    paint={{
-                      "line-color": "red",
-                      "line-width": 2,
-                      "line-dasharray": [3, 3],
-                    }}
-                  />
-                )}
-              </Source>
-            );
-          })
-        )}
-        {stopsData.map((lineData) => {
-          const geojson = {
-            type: "FeatureCollection",
-            features: lineData.stops.map((stop) => ({
-              type: "Feature",
-              properties: {},
-              geometry: {
-                type: "Point",
-                coordinates: [parseFloat(stop.lng), parseFloat(stop.lat)],
-              },
-            })),
-          };
+        {linesData.features.map((line, index) => {
+          const ligneId = line.properties.id_lignes_sens + "-" + index;
 
           return (
             <Source
-              key={`source-${lineData.line}`}
-              id={`circle-${lineData.line}`}
+              key={`source-${ligneId}`}
+              id={`route-${ligneId}`}
               type="geojson"
-              data={geojson}
+              data={{
+                type: "Feature",
+                properties: {},
+                geometry: {
+                  type: "LineString",
+                  coordinates: line.geometry?.coordinates,
+                },
+              }}
             >
               <Layer
-                id={`route-${lineData.line}`}
-                type="circle"
+                id={`route-${ligneId}`}
+                type="line"
                 paint={{
-                  "circle-radius": 2,
-                  "circle-color": lineData.color,
-                  "circle-stroke-width": 1,
-                  "circle-stroke-color": "black",
+                  "line-color": line.properties.code_couleur,
+                  "line-width": 3,
+                  "line-offset": 1.5,
                 }}
               />
             </Source>
           );
         })}
-        ∑
+
+        {/* Aggregated Stops */}
+        {/* circle-translate don't accept data ffrom get this is why we have 2 layers */}
+        <Source id="stops-layer" type="geojson" data={createAggregatedStops()}>
+          <Layer
+            id="stops-layer-unique"
+            type="circle"
+            paint={{
+              "circle-color": ["get", "color"],
+              "circle-radius": 3,
+              "circle-stroke-width": 1,
+            }}
+            filter={["==", ["get", "index"], 0]}
+          />
+          <Layer
+            id="stops-layer"
+            type="circle"
+            paint={{
+              "circle-color": ["get", "color"],
+              "circle-radius": 3,
+              "circle-stroke-width": 1,
+              "circle-translate": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0,
+                [3, 3],
+              ],
+            }}
+            filter={[">=", ["get", "index"], 1]}
+          />
+        </Source>
       </Map>
     </div>
   );
