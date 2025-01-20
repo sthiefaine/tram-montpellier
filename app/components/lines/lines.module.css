@@ -43,6 +43,7 @@
   background-color: var(--color-text-secondary);
   z-index: 10;
   float: left;
+  cursor: pointer;
 }
 
 .numero {

@@ -11,6 +11,7 @@
   border: 1px solid #888;
   border-radius: 25px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  min-height: 220px;
 }
 
 .none {
@@ -42,4 +43,32 @@
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-start;
+  padding-top: 10px;
+}
+
+.modalButton {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #3C82F6;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.modalButton_disabled {
+  margin: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #ccc;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
 }

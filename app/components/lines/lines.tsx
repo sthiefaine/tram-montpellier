@@ -166,7 +166,6 @@ export default function Lines() {
   const incidentsForLineOnInterval = (line: string, interval: string) => {
     if (!incidents) return [];
     return incidents?.filter((incident) => {
-      // TODO: fix this
       return (
         incident.tramsImpacted.includes(line) &&
         incident.time.toLocaleTimeString("fr-FR").slice(0, 5) === interval

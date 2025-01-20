@@ -18,12 +18,12 @@ type Feature = {
   id: number;
   properties: FeatureProperties;
   geometry: {
-    type: string
-    coordinates: number[][]
-  }
+    type: string;
+    coordinates: number[][];
+  };
 };
 
-export type PoiData = Feature[]
+export type PoiData = Feature[];
 
 export const poiData: PoiData = [
   {
@@ -2332,6 +2332,49 @@ export const poiData: PoiData = [
         [3.906305, 43.57111],
         [3.905704, 43.570986],
         [3.90491, 43.570535],
+      ],
+    },
+  },
+  {
+    type: "Feature",
+    id: 164,
+    properties: {
+      id: "way/-1100",
+      couleur_border: "#909717",
+      OLDcouleur_border: "#909717",
+      pointille_ligne: "full",
+      epaisseur_ligne: "bold",
+      couleur_ligne: "#d2d94f",
+      pointille_border: "false",
+      ligneId: "TAM3",
+      OLDcouleur_ligne: "#d2d94f",
+      code_ligne: "TAM3",
+      desc: "",
+      titre_ligne: "",
+    },
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [3.953362, 43.569167],
+        [3.95364, 43.569043],
+        [3.954284, 43.568669],
+        [3.954563, 43.568483],
+        [3.954992, 43.568203],
+        [3.955336, 43.567954],
+        [3.955486, 43.56783],
+        [3.955808, 43.567457],
+        [3.95613, 43.567006],
+        [3.956645, 43.566353],
+        [3.957267, 43.565544],
+        [3.957567, 43.56514],
+        [3.958275, 43.564394],
+        [3.959413, 43.563026],
+        [3.960829, 43.561346],
+        [3.961451, 43.560647],
+        [3.962803, 43.559123],
+        [3.963168, 43.558547],
+        [3.963554, 43.558019],
+        [3.963876, 43.557614],
       ],
     },
   },

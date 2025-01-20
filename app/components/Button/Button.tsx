@@ -24,7 +24,7 @@ export const Button = (props: ButtonProps) => {
         }}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Display Map 🗺️
+        Afficher la carte 🗺️
       </button>
     </div>
   );

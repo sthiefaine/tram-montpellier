@@ -68,7 +68,7 @@ model Stop {
   lng           String?
   accessible    Boolean?
   direction     Boolean
-  logical_stop  String
+  logical_stop  String 
   isTerminus    Boolean
   order         Int
   tramwayLines  TramwayLine[] @relation("LineStops")

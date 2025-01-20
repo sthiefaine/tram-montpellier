@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 // pages/api/fetchFeatures.ts
-import { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
 
 // Définir les types des objets "features"
@@ -14,19 +13,17 @@ interface Feature {
   geometry: any;
 }
 
-// Fonction handler de l'API
 export async function GET() {
-  const xValues = [2091, 2092];
-  const yValues = [1494, 1495, 1496];
+  const xValues = [2091, 2092, 2093];
+  const yValues = [1494, 1495, 1496, 1487];
   let allFeatures: Feature[] = [];
 
   try {
-    // Boucle sur toutes les combinaisons de x et y
     for (let x of xValues) {
       for (let y of yValues) {
+        //https://map.actigraph.com/tiles_lignes/tamtravaux/phase2new/phase2_tiles.php?z=12&x=2093&y=1497
         const url = `https://map.actigraph.com/tiles_lignes/tamtravaux/phase2new/phase2_tiles.php?z=12&x=${x}&y=${y}`;
 
-        // Utilisation de fetch pour récupérer les données
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error(
@@ -36,7 +33,6 @@ export async function GET() {
 
         const data = await response.json();
 
-        // Filtrer les features pour les lignes TAM33 et TAM1
         const filteredFeatures = data.features.filter(
           (feature: Feature) =>
             feature.properties.code_ligne === "TAM1" ||
@@ -46,12 +42,9 @@ export async function GET() {
             feature.properties.code_ligne === "TAM5"
         );
 
-        // Fusionner les features filtrées dans allFeatures
         allFeatures = [...allFeatures, ...filteredFeatures];
       }
     }
-
-    // Retourner le JSON fusionné
     return new NextResponse(JSON.stringify(allFeatures), {
       status: 200,
     });

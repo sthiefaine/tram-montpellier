@@ -82,15 +82,31 @@ export async function GET(){
 
   const tramwayLinesWithStops = await Promise.all(
     tramsLines.map(async (line: TramwayLine) => {
-      const response = await fetch(
-        `https://cartographie.tam-voyages.com/gtfs/ligne/${line.id}/ordered-arrets`
-      );
-      const linesWithStops = await response.json();
-      const stopsArray = Object.values(linesWithStops.stops);
 
-      const parsedStops = stopsArray.map((stop: any) => ({
+      const mainStopsResponse = await fetch(`https://cartographie.tam-voyages.com/gtfs/ligne/${line.id}/ordered-arrets`);
+      const mainStopsData = await mainStopsResponse.json();
+      const mainStopsArray = Object.values(mainStopsData.stops);
+
+      // Récupération des arrêts supplémentaires
+      const additionalStopsResponse = await fetch(
+        `https://cartographie.tam-voyages.com/gtfs/ligne/${line.id}/ordered-arrets/1`
+      );
+      const additionalStopsData = await additionalStopsResponse.json();
+      const additionalStopsArray = Object.values(additionalStopsData.stops);
+
+      // Fusionner les deux listes d'arrêts en éliminant les doublons
+
+      const allStops = [...mainStopsArray, ...additionalStopsArray,];
+
+      // clean emty name
+      const cleanedStops = allStops.filter((stop: any) => stop.nom);
+
+      // filter out duplicates by stop.id
+      const uniqueStopsByUniqueId = cleanedStops
+
+      const parsedStops = uniqueStopsByUniqueId.map((stop: any) => ({
         nom: stop.nom,
-        code: stop.code,
+        code: stop.code ,
         direction: stop.direction,
         logical_stop: stop.logical_stop,
         isTerminus: stop.isTerminus,
@@ -135,8 +151,9 @@ export async function GET(){
           externalCode: line.externalCode,
           name: line.name,
           commercialId: line.commercialId,
+        
           stops: {
-            create: line.stops.map((stop: Stop, index: number) => ({
+            create: line.stops.map((stop: Stop, index: number) => ({ 
               nom: stop.nom,
               code: stop.code,
               direction: stop.direction ?? false,
@@ -147,11 +164,12 @@ export async function GET(){
               accessible: stop.accessible,
               order: index + 1,
             })),
-          },
+          }
+
         },
         include: {
-          stops: true,
-        },
+          stops: true
+        }
       });
 
       console.log(
