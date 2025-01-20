@@ -36,7 +36,7 @@ export default function Modal({ modalRef, children }: ModalProps) {
   };
 
   return (
-    <div ref={modalRef} className={`${styles.modal}`}>
+    <div ref={modalRef} className={incidentsToDisplay.length === 1 ? `${styles.modal}` : `${styles.modal} + ${styles.modal_with_button}`}>
       {incidentsToDisplay.length > 1 && (
       
         <>
