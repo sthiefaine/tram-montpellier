@@ -3,6 +3,7 @@
 }
 
 .line {
+  display: block;
   width: max-content;
   overflow-y: auto;
 }
@@ -38,7 +39,6 @@
 .lineName {
   display: block;
   position: absolute;
-
   left: 10px;
   background-color: var(--color-text-secondary);
   z-index: 10;

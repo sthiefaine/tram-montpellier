@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lines from "../lines/lines";
 import styles from "./timeline.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
@@ -16,6 +16,8 @@ const generateHours = () => {
   return hours;
 };
 
+const todayDate = new Date();
+
 export default function Timeline() {
   const { dateSelected, modalIsOpen, setModalIsOpen } = useDateSelectorStore(
     useShallow((state) => ({
@@ -25,17 +27,12 @@ export default function Timeline() {
     }))
   );
 
-  const todayDate = new Date(
-    new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(
-      new Date()
-    )
-  );
-
   const isToday =
     dateSelected.getDate() === todayDate.getDate() &&
     dateSelected.getMonth() === todayDate.getMonth() &&
     dateSelected.getFullYear() === todayDate.getFullYear();
   const hours = generateHours();
+
   const scrollContainerRef = useRef<HTMLElement | null>(null);
   const targetHour = todayDate.getHours();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -48,7 +45,7 @@ export default function Timeline() {
 
     const scrollHorizontally = () => {
       scrollContainer?.scrollBy({
-        left: scrollAmount * 30,
+        left: scrollAmount * 32,
         behavior: "smooth",
       });
     };
