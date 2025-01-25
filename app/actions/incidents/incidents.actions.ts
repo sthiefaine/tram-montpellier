@@ -44,6 +44,9 @@ export async function getIncidentsAllForDate(date: Date) {
         lte: toTimeZone(endOfDay),
       },
     },
+    orderBy: {
+      time: "asc",
+    },
   });
 
   return incidents;

@@ -10,7 +10,7 @@ type ModalProps = {
   children?: React.ReactNode;
 };
 
-export default function Modal({ modalRef, children }: ModalProps) {
+export default function Modal({ modalRef }: ModalProps) {
   const { incidentsToDisplay, setModalIsOpen, modalIsOpen } =
     useDateSelectorStore(
       useShallow((state) => ({
@@ -21,7 +21,9 @@ export default function Modal({ modalRef, children }: ModalProps) {
     );
 
     const [step, setStep] = useState(0);
+
     const maxStep = incidentsToDisplay.length - 1;
+
 
   if (!modalIsOpen) {
     return <></>;
