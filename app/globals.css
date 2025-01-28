@@ -62,7 +62,7 @@
 }
 
 .incident.terminated::after {
-  background-color: green;
+  background-color: rgb(242, 166, 0);
 }
 
 .i10m {

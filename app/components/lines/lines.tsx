@@ -37,8 +37,22 @@ type Intervals = {
   timeString: string;
   classes: string[];
   isRunning?: boolean;
-  incidents?: {
-    [key: string]: boolean;
+};
+
+type IncidentLight = {
+  time: string;
+  incidentType: string;
+  incidentDescription: string;
+  tramsImpacted: string[];
+  impactedStation: string[];
+  allDay: boolean;
+  incidentEnd: boolean;
+  incidentTerminated: boolean;
+};
+
+type tramwayLinesIncidentsForDate = {
+  [key: string]: {
+    [key: string]: IncidentLight;
   };
 };
 
@@ -90,20 +104,14 @@ const isWithinTimeRange = (time: string, start: string, end: string) => {
 };
 
 export default function Lines() {
-  const {
-    dateSelected,
-    lineSelected,
-    setLineSelected,
-    setModalIsOpen,
-    setIncidentsToDisplay,
-  } = useDateSelectorStore();
+  const { dateSelected, setModalIsOpen, setIncidentsToDisplay } =
+    useDateSelectorStore();
 
   const { start, end } = getHoursForSelectedDate(dateSelected);
   const [tramwayLines, setTramwayLines] = useState(tramwayLinesData);
-  const [incidents, setIncidents] = useState<Incident[] | null>(null);
-  const [numberOfIncidentsForLine, setNumberOfIncidentsForLine] = useState<any>(
-    {}
-  );
+  const [incidentsForDate, setIncidentsForDate] = useState<
+    tramwayLinesIncidentsForDate[]
+  >([]);
   const [intervals, setIntervals] = useState<Intervals[]>(
     generateTimeIntervals()
   );
@@ -120,77 +128,58 @@ export default function Lines() {
   }, [start, end]);
 
   useEffect(() => {
-    if (!incidents) return;
-    setIntervals(
-      intervals.map((interval) => ({
-        ...interval,
-        incidents: tramwayLines.reduce(
-          (acc: { [key: string]: boolean }, line) => {
-            acc[line.numero] =
-              incidentsForLineOnInterval(line.numero, interval.timeString)
-                .length > 0;
-            return acc;
-          },
-          {}
-        ),
-      }))
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [incidents]);
+    const filterIncidentsForDate = (incidents: Incident[]) => {
+      let filteredIncidents: tramwayLinesIncidentsForDate[] = [];
+      incidents.forEach((incident) => {
+        const line = tramwayLines.find(
+          (line) => line.numero === incident.tramsImpacted[0]
+        );
+        if (line) {
+          const key = incident.time?.toLocaleTimeString("fr-FR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          filteredIncidents = {
+            ...filteredIncidents,
+            [line.numero]: {
+              ...filteredIncidents[Number(line.numero)],
+              [key]: {
+                time: incident.time,
+                incidentType: incident.incidentType,
+                incidentDescription: incident.incidentDescription,
+                tramsImpacted: incident.tramsImpacted,
+                impactedStation: incident.impactedStation,
+                estimatedStartTime: incident.estimatedStartTime,
+                allDay: incident.allDay,
+                incidentEnd: incident.incidentEnd,
+                incidentTerminated: incident.incidentTerminated,
+              },
+            },
+          };
+        }
+      });
+      return filteredIncidents;
+    };
 
-  useEffect(() => {
-    setNumberOfIncidentsForLine({});
     const fetchIncidents = async () => {
       const response = await getIncidentsAllForDate(dateSelected);
-      setIncidents(response);
+      setIncidentsForDate(filterIncidentsForDate(response));
     };
 
     fetchIncidents();
-  }, [dateSelected]);
-
-  useEffect(() => {
-    if (!incidents) return;
-    const fetchIncidentsForLine = () => {
-      tramwayLines.forEach((line) => {
-        setNumberOfIncidentsForLine((prev: any) => ({
-          ...prev,
-          [line.numero]: incidents?.filter((incident) =>
-            incident.tramsImpacted.includes(line.numero)
-          ).length,
-        }));
-      });
-    };
-    fetchIncidentsForLine();
-  }, [incidents, tramwayLines]);
-
-  const incidentsForLineOnInterval = (line: string, interval: string) => {
-    if (!incidents) return [];
-    return incidents?.filter((incident) => {
-      return (
-        incident.tramsImpacted.includes(line) &&
-        incident.time.toLocaleTimeString("fr-FR").slice(0, 5) === interval
-      );
-    });
-  };
+  }, [dateSelected, tramwayLines]);
 
   const handleIncidentClick = (lineNumber: string, timeString: string) => {
-    const result = incidentsForLineOnInterval(lineNumber, timeString);
-    if (result.length === 0) return;
-    setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
-    setIncidentsToDisplay(result);
+    const result = incidentsForDate?.[Number(lineNumber)]?.[timeString];
+    if (!result) return;
+    setIncidentsToDisplay([result] as never);
     setModalIsOpen(true);
   };
 
   const handleIncidentsClick = (lineNumber: string) => {
-    const incidentsList = incidents?.filter((incident) => {
-      return incident.tramsImpacted.includes(lineNumber);
-    });
-
-    const result = numberOfIncidentsForLine[lineNumber];
-    if (result === 0) return;
+    const incidentsList = incidentsForDate[Number(lineNumber)];
     if (!incidentsList) return;
-    setLineSelected(lineNumber === lineSelected ? "" : lineNumber);
-    setIncidentsToDisplay(incidentsList);
+    setIncidentsToDisplay([...Object.values(incidentsList)] as never);
     setModalIsOpen(true);
   };
 
@@ -209,13 +198,15 @@ export default function Lines() {
               >
                 {(line as { numero: string }).numero}
               </span>
-              {numberOfIncidentsForLine?.[line.numero] > 0 && (
+              {incidentsForDate?.[Number(line.numero)] && (
                 <span className={styles.badge}>
-                  {numberOfIncidentsForLine[line.numero]}
+                  {Object.keys(incidentsForDate[Number(line.numero)])?.length}
                 </span>
               )}
             </div>
-            {intervals.map((interval: any, index: number) => {
+            {intervals.map((interval: Intervals, index: number) => {
+              const incident =
+                incidentsForDate[Number(line.numero)]?.[interval.timeString];
               return (
                 <a
                   onClick={() =>
@@ -224,17 +215,13 @@ export default function Lines() {
                       interval.timeString
                     )
                   }
-                  key={
-                    index +
-                    "-" +
-                    interval.timeString +
-                    "-" +
-                    interval.incidents?.[line.numero]
-                  }
+                  key={index + "-" + interval.timeString}
                   className={
                     (interval.isRunning
-                      ? interval.incidents?.[line.numero]
-                        ? "incident"
+                      ? incident
+                        ? incident.incidentTerminated
+                          ? "incident terminated"
+                          : "incident"
                         : "ok"
                       : "no") +
                     " " +

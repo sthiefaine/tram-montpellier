@@ -7,7 +7,7 @@ export type DateSelectorState = {
   modalIsOpen: boolean;
   mapIsOpen: boolean;
   lineSelected: string;
-  incidentsToDisplay: Incident[];
+  incidentsToDisplay: Partial<Incident[]>;
 };
 
 export type DateSelectorActions = {
@@ -15,7 +15,7 @@ export type DateSelectorActions = {
   setModalIsOpen: (isOpen: boolean) => void;
   setMapIsOpen: (isOpen: boolean) => void;
   setLineSelected: (line: string) => void;
-  setIncidentsToDisplay: (incidents: Incident[]) => void;
+  setIncidentsToDisplay: (incidents: Partial<Incident[]>) => void;
 };
 
 export type DateSelectorStore = DateSelectorState & DateSelectorActions;
@@ -38,7 +38,7 @@ export const useDateSelectorStore = create<DateSelectorStore>((set) => ({
   setDateSelected: (date: Date) => set({ dateSelected: date }),
   setModalIsOpen: (isOpen: boolean) => set({ modalIsOpen: isOpen }),
   setLineSelected: (line: string) => set({ lineSelected: line }),
-  setIncidentsToDisplay: (incidents: Incident[]) =>
+  setIncidentsToDisplay: (incidents: Partial<Incident[]>) =>
     set({ incidentsToDisplay: incidents }),
   setMapIsOpen: (isOpen: boolean) => set({ mapIsOpen: isOpen }),
 }));

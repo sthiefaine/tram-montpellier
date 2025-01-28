@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lines from "../lines/lines";
 import styles from "./timeline.module.css";
 import { useDateSelectorStore } from "@/store/dateSelector";
